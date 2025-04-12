@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  nginx_service:
+    container_name: dinamicapi_nginx
+    image: nginx:stable
+    depends_on:
+      - app_service
+    volumes:
+      - ./config/nginx_default.template:/etc/nginx/templates/default.conf.template
+      - ./dinamic-api-back:/var/www/html
+    ports:
+      - 8085:80
+    environment:
+      NGINX_HOST: dinamicapi_php
+
+  app_service:
+    container_name: dinamicapi_php
+    build:
+      context: ./dinamic-api-back/
+    working_dir: /var/www/html
+    restart: always
+    volumes:
+      - ./config/php_fpm.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./dinamic-api-back:/var/www/html
+    command: bash -c "php-fpm -R"
+
+  db:
+    container_name: dinamicapi_db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dinamicapi
+      POSTGRES_PASSWORD: Lk93ajsd8Mno1ZplqB
+      POSTGRES_DB: db_dinamicapi
+    volumes:
+      - dinamicapi_db:/var/lib/postgresql/data
+    ports:
+      - "5438:5432"
+
+volumes:
+  dinamicapi_db: {}
