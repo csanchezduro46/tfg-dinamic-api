@@ -15,6 +15,7 @@ class ApiCall extends Model
     protected $fillable = [
         'platform_version_id',
         'name',
+        'category',
         'endpoint',
         'method',
         'request_type',
@@ -33,4 +34,9 @@ class ApiCall extends Model
     {
         return $this->belongsTo(PlatformVersion::class);
     }
+
+    public function category()
+{
+    return $this->belongsTo(ApiCategory::class, 'category_id');
+}
 }
