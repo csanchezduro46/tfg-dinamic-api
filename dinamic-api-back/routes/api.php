@@ -1,25 +1,36 @@
 <?php
 
+use App\Http\Controllers\Platforms\ApiCategoryController;
+use App\Http\Controllers\Platforms\PlatformController;
+use App\Http\Controllers\Platforms\PlatformVersionController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::middleware('auth:sanctum')->group(function () {
+    // Categorías
+    Route::get('/categories', [ApiCategoryController::class, 'getAll']);
 
-// Llamadas anónimas
+    Route::middleware('role:admin')->group(function () {
+        Route::post('/categories', [ApiCategoryController::class, 'store']);
+        Route::put('/categories/{id}', [ApiCategoryController::class, 'update']);
+        Route::delete('/categories/{id}', [ApiCategoryController::class, 'delete']);
+    });
 
+    // Plataformas
+    Route::get('/platforms', [PlatformController::class, 'getPlatformsSearch']);
 
-// Authenticated with user group
-Route::group(['middleware' => ['auth:api', 'role:user']], function() {
-});
+    Route::middleware('role:admin')->group(function () {
+        Route::post('/platforms', [PlatformController::class, 'store']);
+        Route::put('/platforms/{id}', [PlatformController::class, 'update']);
+        Route::delete('/platforms/{id}', [PlatformController::class, 'delete']);
+    });
 
-// Authenticated with admin group
-Route::group(['middleware' => ['auth:api', 'role:admin']], function() {
+    // Versiones
+    Route::get('/platforms/{id}/versions', [PlatformVersionController::class, 'getByPlatform']);
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/versions', [PlatformVersionController::class, 'getAll']);
+        Route::post('/platforms/{id}/versions', [PlatformVersionController::class, 'store']);
+        Route::put('/versions/{id}', [PlatformVersionController::class, 'update']);
+        Route::delete('/versions/{id}', [PlatformVersionController::class, 'delete']);
+    });
 });
