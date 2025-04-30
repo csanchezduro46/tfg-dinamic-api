@@ -21,4 +21,14 @@ class Platform extends Model
     {
         return $this->hasMany(PlatformVersion::class);
     }
+
+    public function necessaryKeys()
+    {
+        return $this->hasMany(\App\Models\PlatformNecessaryKey::class);
+    }
+
+    public function connections()
+    {
+        return $this->hasMany(PlatformConnection::class);
+    }
 }

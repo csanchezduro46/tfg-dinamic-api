@@ -1,18 +1,21 @@
 <?php
 
-use App\Http\Controllers\Platforms\ApiCategoryController;
+use App\Http\Controllers\Platforms\ApiGroupController;
+use App\Http\Controllers\Platforms\PlatformConnectionController;
+use App\Http\Controllers\Platforms\PlatformConnectionCredentialsController;
 use App\Http\Controllers\Platforms\PlatformController;
+use App\Http\Controllers\Platforms\PlatformNecessaryKeysController;
 use App\Http\Controllers\Platforms\PlatformVersionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Categorías
-    Route::get('/categories', [ApiCategoryController::class, 'getAll']);
+    // Group
+    Route::get('/groups', [ApiGroupController::class, 'getAll']);
 
     Route::middleware('role:admin')->group(function () {
-        Route::post('/categories', [ApiCategoryController::class, 'store']);
-        Route::put('/categories/{id}', [ApiCategoryController::class, 'update']);
-        Route::delete('/categories/{id}', [ApiCategoryController::class, 'delete']);
+        Route::post('/groups', [ApiGroupController::class, 'store']);
+        Route::put('/groups/{id}', [ApiGroupController::class, 'update']);
+        Route::delete('/groups/{id}', [ApiGroupController::class, 'delete']);
     });
 
     // Plataformas
@@ -24,6 +27,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/platforms/{id}', [PlatformController::class, 'delete']);
     });
 
+    // Necessary Keys
+    Route::get('/platforms/{id}/necessary-keys', [PlatformNecessaryKeysController::class, 'getKeysPlatform']);
+
+    Route::middleware('role:admin')->group(function () {
+        Route::post('/platforms/{id}/necessary-keys', [PlatformNecessaryKeysController::class, 'store']);
+        Route::put('/platforms/{id}/necessary-keys/{key}', [PlatformNecessaryKeysController::class, 'update']);
+        Route::delete('/platforms/{id}/necessary-keys/{key}', [PlatformNecessaryKeysController::class, 'delete']);
+    });
+
     // Versiones
     Route::get('/platforms/{id}/versions', [PlatformVersionController::class, 'getByPlatform']);
 
@@ -33,4 +45,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/versions/{id}', [PlatformVersionController::class, 'update']);
         Route::delete('/versions/{id}', [PlatformVersionController::class, 'delete']);
     });
+
+    // Conexiones de usuarios a plataformas externas
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/connections', [PlatformConnectionController::class, 'getAll']);
+    });
+
+    Route::get('/connections/me', [PlatformConnectionController::class, 'getByUser']);
+    Route::post('/connections', [PlatformConnectionController::class, 'store']);
+    Route::put('/connections/{id}', [PlatformConnectionController::class, 'update']);
+    Route::delete('/connections/{id}', [PlatformConnectionController::class, 'delete']);
+    Route::post('/connections/{id}/test', [PlatformConnectionController::class, 'testConnection']);
 });

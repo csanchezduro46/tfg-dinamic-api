@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ApiCategory extends Model
+class ApiCallGroup extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -18,6 +18,6 @@ class ApiCategory extends Model
 
     public function apiCalls(): HasMany
     {
-        return $this->hasMany(ApiCall::class, 'category_id');
+        return $this->hasMany(ApiCall::class, 'group_id');
     }
 }

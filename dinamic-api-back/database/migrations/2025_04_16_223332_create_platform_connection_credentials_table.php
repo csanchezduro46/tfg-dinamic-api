@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('api_categories', function (Blueprint $table) {
+        Schema::create('platform_connection_credentials', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->foreignId('platform_connection_id')->constrained()->onDelete('cascade');
+            $table->foreignId('necessary_key_id')->nullable()->constrained('platform_necessary_keys')->nullOnDelete();
+            $table->text('value');
             $table->timestamps();
         });
     }
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('api_categories');
+        Schema::dropIfExists('platform_connection_credentials');
     }
 };

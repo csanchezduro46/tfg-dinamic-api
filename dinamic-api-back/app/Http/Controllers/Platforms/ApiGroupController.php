@@ -3,24 +3,24 @@
 namespace App\Http\Controllers\Platforms;
 
 use App\Http\Controllers\Controller;
-use App\Models\ApiCategory;
+use App\Models\ApiCallGroup;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 
-class ApiCategoryController extends Controller
+class ApiGroupController extends Controller
 {
-    // Obtener todas las categorías (cualquier usuario logueado)
+    // Obtener todos los grupos (cualquier usuario logueado)
     public function getAll(): JsonResponse
     {
-        return response()->json(ApiCategory::all());
+        return response()->json(ApiCallGroup::all());
     }
 
-    // Crear una categoría (admin)
+    // Crear un grupo (admin)
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|unique:api_categories,name|max:100',
+            'name' => 'required|string|unique:api_call_group,name|max:100',
         ], [
             'name.required' => 'El nombre es obligatorio.',
             'name.unique' => 'El nombre ya existe.',
@@ -34,21 +34,21 @@ class ApiCategoryController extends Controller
             ], 400);
         }
 
-        $category = ApiCategory::create(['name' => $request->name]);
+        $group = ApiCallGroup::create(['name' => $request->name]);
 
         return response()->json([
-            'msg' => 'Categoría creada correctamente.',
-            'category' => $category
+            'msg' => 'Grupo creado correctamente.',
+            'group' => $group
         ], 201);
     }
 
-    // Actualizar una categoría (admin)
+    // Actualizar un grupo (admin)
     public function update(Request $request, $id): JsonResponse
     {
-        $category = ApiCategory::findOrFail($id);
+        $group = ApiCallGroup::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|unique:api_categories,name|max:100',
+            'name' => 'required|string|unique:api_call_group,name|max:100',
         ], [
             'name.required' => 'El nombre es obligatorio.',
             'name.unique' => 'El nombre ya existe.',
@@ -62,22 +62,22 @@ class ApiCategoryController extends Controller
             ], 400);
         }
 
-        $category->update(['name' => $request->name]);
+        $group->update(['name' => $request->name]);
 
         return response()->json([
-            'msg' => 'Categoría actualizada correctamente.',
-            'category' => $category
+            'msg' => 'Grupo actualizado correctamente.',
+            'group' => $group
         ]);
     }
 
-    // Eliminar una categoría (admin)
+    // Eliminar un grupo (admin)
     public function delete($id): JsonResponse
     {
-        $category = ApiCategory::findOrFail($id);
-        $category->delete();
+        $group = ApiCallGroup::findOrFail($id);
+        $group->delete();
 
         return response()->json([
-            'msg' => 'Categoría eliminada correctamente.'
+            'msg' => 'Grupo eliminado correctamente.'
         ]);
     }
 }

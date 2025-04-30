@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\ApiCategory;
+use App\Models\ApiCallGroup;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Auth\Events\Verified;
 use App\Models\User;
 
-class PlatformCategorySeeder extends Seeder
+class PlatformGroupSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,7 +18,7 @@ class PlatformCategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = [
+        $groups = [
             'Customers',
             'Products',
             'Orders',
@@ -30,8 +30,8 @@ class PlatformCategorySeeder extends Seeder
             'Common Objects'
         ];
 
-        foreach ($categories as $category) {
-            ApiCategory::firstOrCreate(['name' => $category]);
+        foreach ($groups as $group) {
+            ApiCallGroup::firstOrCreate(['name' => $group]);
         }
     }
 }

@@ -26,5 +26,15 @@ class UserSeeder extends Seeder
 
         $user->markEmailAsVerified();
         $user->assignRole('admin');
+
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'csanchezduro23@gmail.com',
+            'password' => Hash::make('TestUoc12345'),
+
+        ]);
+
+        $user->markEmailAsVerified();
+        $user->assignRole('user');
     }
 }
