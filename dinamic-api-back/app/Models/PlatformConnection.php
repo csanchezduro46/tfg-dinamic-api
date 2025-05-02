@@ -27,7 +27,7 @@ class PlatformConnection extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function credential()
+    public function credentials()
     {
         return $this->hasMany(PlatformConnectionCredential::class);
     }

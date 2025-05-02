@@ -53,7 +53,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/connections/me', [PlatformConnectionController::class, 'getByUser']);
     Route::post('/connections', [PlatformConnectionController::class, 'store']);
+    Route::get('/connections/{id}', [PlatformConnectionController::class, 'getSingle']);
     Route::put('/connections/{id}', [PlatformConnectionController::class, 'update']);
     Route::delete('/connections/{id}', [PlatformConnectionController::class, 'delete']);
-    Route::post('/connections/{id}/test', [PlatformConnectionController::class, 'testConnection']);
+
+    // Platform connection credentials
+    Route::get('/connections/{id}/test', [PlatformConnectionCredentialsController::class, 'testConnection']);
+    Route::get('/connections/{id}/credentials', [PlatformConnectionCredentialsController::class, 'getByConnection']);
+    Route::post('/connections/{id}/credentials', [PlatformConnectionCredentialsController::class, 'storeKeys']);
+    Route::delete('/connections/{id}/credentials', [PlatformConnectionCredentialsController::class, 'deleteAllKey']);
+    Route::delete('/connections/{id}/credentials/{idKey}', [PlatformConnectionCredentialsController::class, 'deleteKey']);
 });
