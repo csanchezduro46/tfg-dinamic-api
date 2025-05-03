@@ -47,4 +47,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function platformConnections()
+{
+    return $this->hasMany(PlatformConnection::class);
+}
 }
