@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DatabaseConnections\DatabaseConnectionController;
+use App\Http\Controllers\DatabaseConnections\DatabaseSchemaController;
 use App\Http\Controllers\Platforms\ApiGroupController;
 use App\Http\Controllers\Platforms\PlatformConnectionController;
 use App\Http\Controllers\Platforms\PlatformConnectionCredentialsController;
@@ -68,12 +69,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::prefix('db-connections')->middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin')->group(function () {
-        Route::get('/', [DatabaseConnectionController::class, 'getAll']);            // Listado de conexiones
+        Route::get('/', [DatabaseConnectionController::class, 'getAll']);
     });
-    Route::get('/me', [DatabaseConnectionController::class, 'getConnectionsUser']);            // Listado de conexiones del usuario
-    Route::get('/{id}', [DatabaseConnectionController::class, 'getConnectionBd']);      // Actualizar conexión
-    Route::post('/', [DatabaseConnectionController::class, 'store']);          // Crear nueva conexión
-    Route::put('/{id}', [DatabaseConnectionController::class, 'update']);      // Actualizar conexión
-    Route::delete('/{id}', [DatabaseConnectionController::class, 'delete']);  // Eliminar conexión
-    Route::get('/{id}/test', [DatabaseConnectionController::class, 'testConnection']);  // Probar conexión
+    Route::get('/me', [DatabaseConnectionController::class, 'getConnectionsUser']);
+    Route::get('/{id}', [DatabaseConnectionController::class, 'getConnectionBd']);
+    Route::post('/', [DatabaseConnectionController::class, 'store']);
+    Route::put('/{id}', [DatabaseConnectionController::class, 'update']);
+    Route::delete('/{id}', [DatabaseConnectionController::class, 'delete']);
+    Route::get('/{id}/test', [DatabaseConnectionController::class, 'testConnection']);
+
+    Route::get('{id}/schema', [DatabaseSchemaController::class, 'getFullSchema']);
+    Route::get('{id}/tables', [DatabaseSchemaController::class, 'getTables']);
+    Route::get('{id}/tables/{table}/columns', [DatabaseSchemaController::class, 'getColumns']);
 });
