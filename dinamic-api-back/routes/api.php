@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DatabaseConnections\DatabaseConnectionController;
+use App\Http\Controllers\DatabaseConnections\DatabaseSchemaController;
 use App\Http\Controllers\Platforms\ApiGroupController;
 use App\Http\Controllers\Platforms\PlatformConnectionController;
 use App\Http\Controllers\Platforms\PlatformConnectionCredentialsController;
@@ -63,4 +65,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/connections/{id}/credentials', [PlatformConnectionCredentialsController::class, 'storeKeys']);
     Route::delete('/connections/{id}/credentials', [PlatformConnectionCredentialsController::class, 'deleteAllKey']);
     Route::delete('/connections/{id}/credentials/{idKey}', [PlatformConnectionCredentialsController::class, 'deleteKey']);
+});
+
+Route::prefix('db-connections')->middleware('auth:sanctum')->group(function () {
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/', [DatabaseConnectionController::class, 'getAll']);
+    });
+    Route::get('/me', [DatabaseConnectionController::class, 'getConnectionsUser']);
+    Route::get('/{id}', [DatabaseConnectionController::class, 'getConnectionBd']);
+    Route::post('/', [DatabaseConnectionController::class, 'store']);
+    Route::put('/{id}', [DatabaseConnectionController::class, 'update']);
+    Route::delete('/{id}', [DatabaseConnectionController::class, 'delete']);
+    Route::get('/{id}/test', [DatabaseConnectionController::class, 'testConnection']);
+
+    Route::get('{id}/schema', [DatabaseSchemaController::class, 'getFullSchema']);
+    Route::get('{id}/tables', [DatabaseSchemaController::class, 'getTables']);
+    Route::get('{id}/tables/{table}/columns', [DatabaseSchemaController::class, 'getColumns']);
 });
