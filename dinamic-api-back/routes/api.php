@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DatabaseConnections\DatabaseConnectionController;
 use App\Http\Controllers\Platforms\ApiGroupController;
 use App\Http\Controllers\Platforms\PlatformConnectionController;
 use App\Http\Controllers\Platforms\PlatformConnectionCredentialsController;
@@ -63,4 +64,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/connections/{id}/credentials', [PlatformConnectionCredentialsController::class, 'storeKeys']);
     Route::delete('/connections/{id}/credentials', [PlatformConnectionCredentialsController::class, 'deleteAllKey']);
     Route::delete('/connections/{id}/credentials/{idKey}', [PlatformConnectionCredentialsController::class, 'deleteKey']);
+});
+
+Route::prefix('db-connections')->middleware('auth:sanctum')->group(function () {
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/', [DatabaseConnectionController::class, 'getAll']);            // Listado de conexiones
+    });
+    Route::get('/me', [DatabaseConnectionController::class, 'getConnectionsUser']);            // Listado de conexiones del usuario
+    Route::get('/{id}', [DatabaseConnectionController::class, 'getConnectionBd']);      // Actualizar conexión
+    Route::post('/', [DatabaseConnectionController::class, 'store']);          // Crear nueva conexión
+    Route::put('/{id}', [DatabaseConnectionController::class, 'update']);      // Actualizar conexión
+    Route::delete('/{id}', [DatabaseConnectionController::class, 'delete']);  // Eliminar conexión
+    Route::get('/{id}/test', [DatabaseConnectionController::class, 'testConnection']);  // Probar conexión
 });

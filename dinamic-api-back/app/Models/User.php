@@ -49,7 +49,13 @@ class User extends Authenticatable
     }
 
     public function platformConnections()
-{
-    return $this->hasMany(PlatformConnection::class);
-}
+    {
+        return $this->hasMany(PlatformConnection::class);
+    }
+
+    public function databaseConnections()
+    {
+        return $this->hasMany(\App\Models\DatabaseConnection::class);
+    }
+
 }
