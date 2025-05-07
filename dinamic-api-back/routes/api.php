@@ -8,6 +8,7 @@ use App\Http\Controllers\Platforms\PlatformConnectionCredentialsController;
 use App\Http\Controllers\Platforms\PlatformController;
 use App\Http\Controllers\Platforms\PlatformNecessaryKeysController;
 use App\Http\Controllers\Platforms\PlatformVersionController;
+use App\Http\Controllers\ApiCalls\ApiCallController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -81,4 +82,17 @@ Route::prefix('db-connections')->middleware('auth:sanctum')->group(function () {
     Route::get('{id}/schema', [DatabaseSchemaController::class, 'getFullSchema']);
     Route::get('{id}/tables', [DatabaseSchemaController::class, 'getTables']);
     Route::get('{id}/tables/{table}/columns', [DatabaseSchemaController::class, 'getColumns']);
+});
+
+Route::prefix('api-calls')->middleware('auth:sanctum')->group(function () {
+    Route::get('/{id}', [ApiCallController::class, 'get']);
+    Route::get('/platform-version/{versionId}', [ApiCallController::class, 'getByPlatformVersion']);
+    Route::get('/{id}/fields', [ApiCallController::class, 'getFields']);
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/', [ApiCallController::class, 'getAll']);
+        Route::post('/', [ApiCallController::class, 'store']);
+        Route::put('/{id}', [ApiCallController::class, 'update']);
+        Route::delete('/{id}', [ApiCallController::class, 'delete']);
+    });
 });

@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             PlatformGroupSeeder::class,
             PlatformSeeder::class,
+            ApiCallSeeder::class
         ]);
     }
 }

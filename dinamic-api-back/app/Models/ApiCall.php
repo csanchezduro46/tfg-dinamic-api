@@ -30,13 +30,13 @@ class ApiCall extends Model
         'response_example' => 'array',
     ];
 
-    public function platformVersion(): BelongsTo
+    public function version()
     {
-        return $this->belongsTo(PlatformVersion::class);
+        return $this->belongsTo(PlatformVersion::class, 'platform_version_id');
     }
 
     public function group()
-{
-    return $this->belongsTo(ApiCallGroup::class, 'group_id');
-}
+    {
+        return $this->belongsTo(ApiCallGroup::class, 'group_id');
+    }
 }
