@@ -34,7 +34,6 @@ class ApiCallMappingFieldController extends Controller
             'source_field' => 'required|string|max:100',
             'target_field' => 'required|string|max:100',
         ];
-        
 
         $validator = Validator::make($request->all(), $rules, [
             'source_field.required' => 'El campo de origen es obligatorio.',

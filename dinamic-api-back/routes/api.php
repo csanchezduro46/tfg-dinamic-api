@@ -104,6 +104,7 @@ Route::prefix('mappings')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [ApiCallMappingController::class, 'store']);
     Route::put('/{id}', [ApiCallMappingController::class, 'update']);
     Route::delete('/{id}', [ApiCallMappingController::class, 'delete']);
+    // Mapping fields
     Route::get('/{id}/fields', [ApiCallMappingFieldController::class, 'getFieldsByMapping']);
     Route::post('/{id}/fields', [ApiCallMappingFieldController::class, 'store']);
     Route::put('/{id}/fields/{fieldId}', [ApiCallMappingFieldController::class, 'update']);

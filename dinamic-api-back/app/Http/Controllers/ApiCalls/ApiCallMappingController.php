@@ -14,9 +14,9 @@ class ApiCallMappingController extends Controller
     public function getMappings()
     {
         if (!Auth::user()->hasRole('admin')) {
-            return response()->json(ApiCallMapping::with(['user', 'apiCall', 'dbConnection'])->get());
+            return response()->json(ApiCallMapping::with(['user', 'sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb'])->get());
         }
-        return response()->json(Auth::user()->apiCallMappings()->with(['apiCall', 'dbConnection'])->get());
+        return response()->json(Auth::user()->apiCallMappings()->with(['sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb'])->get());
     }
 
     public function store(Request $request)
@@ -42,11 +42,18 @@ class ApiCallMappingController extends Controller
             'name.required' => 'El nombre del mapeo es obligatorio.',
             'direction.required' => 'La dirección del mapeo es obligatoria.',
             'fields.required' => 'Debe especificar los campos a mapear.',
-            'user_id.required' => 'El usuario es obligatorio para un mapeo creado por un administrador.'
+            'user_id.required' => 'El usuario es obligatorio para un mapeo creado por un administrador.',
+            'user_id.exists' => 'El usuario debe existir'
         ]);
 
-        $validated = $validator->validated();
+        if ($validator->fails()) {
+            return response()->json([
+                'msg' => 'Error en la petición',
+                'errors' => $validator->errors()
+            ], 400);
+        }
 
+        $validated = $validator->validated();
         $errors = [];
 
         // Mínimo hay que indicar un tipo de conexión
@@ -54,17 +61,31 @@ class ApiCallMappingController extends Controller
         $hasTarget = $validated['target_api_call_id'] ?? $validated['target_db_connection_id'] ?? null;
 
         if (!$hasSource) {
-            $errors['origen'] = 'Debe indicar un origen (API o conexión de BBDD)';
+            $errors['origen'] = 'Debes indicar un origen (API o conexión de BBDD)';
         }
 
         if (!$hasTarget) {
-            $errors['destino'] = 'Debe indicar un destino (API o conexión de BBDD)';
+            $errors['destino'] = 'Debes indicar un destino (API o conexión de BBDD)';
         }
 
-        if ($validator->fails() || !empty($errors)) {
+        if (isset($validated['source_db_connection_id']) && !isset($validated['source_table'])) {
+            $errors['source_table'] = 'Debes indicar una tabla de origen para la conexión de BBDD';
+        }
+
+        if (isset($validated['target_db_connection_id']) && !isset($validated['target_table'])) {
+            $errors['target_table'] = 'Debes indicar una tabla de destino para la conexión de BBDD';
+        }
+
+        foreach ($request->fields as $field) {
+            if(!isset($field['source_field']) || !isset($field['target_field'])) {
+                $errors['fields'] = 'Debes indicar los campos de origen y destino (source_field y target_field) de los campos que quieres relacionar';
+            }
+        }
+
+        if (!empty($errors)) {
             return response()->json([
                 'msg' => 'Error en la petición',
-                'errors' => $errors || $validator->errors()
+                'errors' => $errors
             ], 400);
         }
 
