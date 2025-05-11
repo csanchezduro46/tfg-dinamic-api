@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ApiCalls\ApiCallMappingController;
+use App\Http\Controllers\ApiCalls\ApiCallMappingFieldController;
 use App\Http\Controllers\DatabaseConnections\DatabaseConnectionController;
 use App\Http\Controllers\DatabaseConnections\DatabaseSchemaController;
 use App\Http\Controllers\Platforms\ApiGroupController;
@@ -95,4 +97,15 @@ Route::prefix('api-calls')->middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [ApiCallController::class, 'update']);
         Route::delete('/{id}', [ApiCallController::class, 'delete']);
     });
+});
+
+Route::prefix('mappings')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ApiCallMappingController::class, 'getMappings']);
+    Route::post('/', [ApiCallMappingController::class, 'store']);
+    Route::put('/{id}', [ApiCallMappingController::class, 'update']);
+    Route::delete('/{id}', [ApiCallMappingController::class, 'delete']);
+    Route::get('/{id}/fields', [ApiCallMappingFieldController::class, 'getFieldsByMapping']);
+    Route::post('/{id}/fields', [ApiCallMappingFieldController::class, 'store']);
+    Route::put('/{id}/fields/{fieldId}', [ApiCallMappingFieldController::class, 'update']);
+    Route::delete('/{id}/fields/{fieldId}', [ApiCallMappingFieldController::class, 'delete']);
 });
