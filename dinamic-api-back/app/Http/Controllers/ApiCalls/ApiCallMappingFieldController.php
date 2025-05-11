@@ -8,6 +8,7 @@ use App\Models\ApiCallMappingField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ApiCallMappingFieldController extends Controller
 {
@@ -31,11 +32,20 @@ class ApiCallMappingFieldController extends Controller
         }
 
         $rules = [
-            'source_field' => 'required|string|max:100',
+            'source_field' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('api_call_mapping_fields')->where(function ($query) use ($mappingId, $request) {
+                    return $query->where('api_call_mapping_id', $mappingId)
+                        ->where('target_field', $request->input('target_field'));
+                }),
+            ],
             'target_field' => 'required|string|max:100',
         ];
 
         $validator = Validator::make($request->all(), $rules, [
+            'source_field.unique' => 'Ya existe un mapeo con estos campos para esta relación.',
             'source_field.required' => 'El campo de origen es obligatorio.',
             'target_field.required' => 'El campo de destino es obligatorio.',
         ]);
