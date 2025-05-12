@@ -19,6 +19,17 @@ class ApiCallMappingController extends Controller
         return response()->json(Auth::user()->apiCallMappings()->with(['sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb'])->get());
     }
 
+    public function getSingle($id)
+    {
+        $mapping = ApiCallMapping::with('fields')->findOrFail($id);
+
+        if ($mapping->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
+            return response()->json(['msg' => 'Forbidden'], 403);
+        }
+
+        return response()->json($mapping->load('fields'));
+    }
+
     public function store(Request $request)
     {
         $rules = [

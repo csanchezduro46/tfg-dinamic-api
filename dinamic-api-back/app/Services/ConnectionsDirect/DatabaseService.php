@@ -71,4 +71,28 @@ class DatabaseService
             };
         });
     }
+
+    public function getData(DatabaseConnection $connection, string $table, array $columns = ['*'], int $limit = 15): array
+    {
+        $pdo = $this->getPDO($connection->getDecryptedCredentials());
+
+        $columnList = implode(', ', array_map(fn($col) => "\"$col\"", $columns));
+        $sql = "SELECT {$columnList} FROM \"{$table}\" LIMIT {$limit}";
+
+        try {
+            return $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\Throwable $e) {
+            throw new \Exception("Error al obtener datos de {$table}: " . $e->getMessage());
+        }
+    }
+
+    public function insert(DatabaseConnection $connection, string $table, array $data): void
+    {
+        $pdo = $this->getPDO($connection->getDecryptedCredentials());
+        $columns = implode(', ', array_keys($data));
+        $placeholders = implode(', ', array_fill(0, count($data), '?'));
+        $stmt = $pdo->prepare("INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})");
+        $stmt->execute(array_values($data));
+    }
+
 }

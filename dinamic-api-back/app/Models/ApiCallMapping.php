@@ -51,4 +51,9 @@ class ApiCallMapping extends Model
     {
         return $this->hasMany(ApiCallMappingField::class);
     }
+
+    public function executions(): HasMany
+    {
+        return $this->hasMany(Execution::class);
+    }
 }

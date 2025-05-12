@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('executions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('api_call_mapping_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
+            $table->enum('status', ['pending', 'success', 'failed', 'running'])->default('pending');
             $table->enum('execution_type', ['manual', 'scheduled'])->default('manual');
             $table->json('response_log')->nullable();
             $table->timestamp('started_at')->nullable();
