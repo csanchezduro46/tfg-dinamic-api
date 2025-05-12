@@ -21,7 +21,7 @@ class PlatformConnectionCredentialsController extends Controller
 
         return response()->json([
             'connection' => $connection->name,
-            'connection_credentials' => $connection->credentials()->get()
+            'connection_credentials' => $connection->credentials()->with('necessaryKey')->get()
         ]);
     }
 

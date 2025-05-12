@@ -1,13 +1,18 @@
 <?php
 
+use App\Http\Controllers\ApiCalls\ApiCallMappingController;
+use App\Http\Controllers\ApiCalls\ApiCallMappingFieldController;
 use App\Http\Controllers\DatabaseConnections\DatabaseConnectionController;
 use App\Http\Controllers\DatabaseConnections\DatabaseSchemaController;
+use App\Http\Controllers\Executions\ExecutionController;
+use App\Http\Controllers\Executions\HistoryExecutionController;
 use App\Http\Controllers\Platforms\ApiGroupController;
 use App\Http\Controllers\Platforms\PlatformConnectionController;
 use App\Http\Controllers\Platforms\PlatformConnectionCredentialsController;
 use App\Http\Controllers\Platforms\PlatformController;
 use App\Http\Controllers\Platforms\PlatformNecessaryKeysController;
 use App\Http\Controllers\Platforms\PlatformVersionController;
+use App\Http\Controllers\ApiCalls\ApiCallController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -81,4 +86,39 @@ Route::prefix('db-connections')->middleware('auth:sanctum')->group(function () {
     Route::get('{id}/schema', [DatabaseSchemaController::class, 'getFullSchema']);
     Route::get('{id}/tables', [DatabaseSchemaController::class, 'getTables']);
     Route::get('{id}/tables/{table}/columns', [DatabaseSchemaController::class, 'getColumns']);
+});
+
+Route::prefix('api-calls')->middleware('auth:sanctum')->group(function () {
+    Route::get('/{id}', [ApiCallController::class, 'get']);
+    Route::get('/platform-version/{versionId}', [ApiCallController::class, 'getByPlatformVersion']);
+    Route::get('/{id}/fields', [ApiCallController::class, 'getFields']);
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/', [ApiCallController::class, 'getAll']);
+        Route::post('/', [ApiCallController::class, 'store']);
+        Route::put('/{id}', [ApiCallController::class, 'update']);
+        Route::delete('/{id}', [ApiCallController::class, 'delete']);
+    });
+});
+
+Route::prefix('mappings')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ApiCallMappingController::class, 'getMappings']);
+    Route::get('/{id}', [ApiCallMappingController::class, 'getSingle']);
+    Route::post('/', [ApiCallMappingController::class, 'store']);
+    Route::put('/{id}', [ApiCallMappingController::class, 'update']);
+    Route::delete('/{id}', [ApiCallMappingController::class, 'delete']);
+    // Mapping fields
+    Route::get('/{id}/fields', [ApiCallMappingFieldController::class, 'getFieldsByMapping']);
+    Route::post('/{id}/fields', [ApiCallMappingFieldController::class, 'store']);
+    Route::put('/{id}/fields/{fieldId}', [ApiCallMappingFieldController::class, 'update']);
+    Route::delete('/{id}/fields/{fieldId}', [ApiCallMappingFieldController::class, 'delete']);
+});
+
+    // Executions
+Route::prefix('/executions')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ExecutionController::class, 'list']);
+    Route::get('/mappings/{id}', [ExecutionController::class, 'listByMapping']);
+    Route::post('/mappings/{id}', [ExecutionController::class, 'execute']); // para iniciar ejecución
+
+    Route::get('/history/{executionId}', [HistoryExecutionController::class, 'show']);
 });

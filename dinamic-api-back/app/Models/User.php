@@ -55,7 +55,20 @@ class User extends Authenticatable
 
     public function databaseConnections()
     {
-        return $this->hasMany(\App\Models\DatabaseConnection::class);
+        return $this->hasMany(DatabaseConnection::class);
+    }
+
+    public function apiCallMappings()
+    {
+        return $this->hasMany(ApiCallMapping::class);
+    }
+
+    public function apiCallMappingFields()
+    {
+        return $this->hasManyThrough(
+            ApiCallMappingField::class,
+            ApiCallMapping::class
+        );
     }
 
 }
