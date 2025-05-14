@@ -38,7 +38,7 @@ class ExecutionController extends Controller
         return response()->json($executions);
     }
 
-    public function store($mappingId, Request $request)
+    public function execute($mappingId, Request $request)
     {
         $mapping = ApiCallMapping::findOrFail($mappingId);
         if ($mapping->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
@@ -48,14 +48,10 @@ class ExecutionController extends Controller
         $validator = Validator::make($request->all(), [
             'execution_type' => 'required|in:manual,scheduled',
             'started_at' => 'nullable|date',
-            'repeat' => 'nullable|in:none,hourly,daily,weekly,custom',
-            'cron_expression' => 'nullable|string|required_if:repeat,custom',
         ], [
             'execution_type.required' => 'El tipo de ejecución es obligatoria.',
             'execution_type.in' => 'Debes indicar el tipo de ejecución que deseas: manual o programada (scheduled).',
-            'started_at.date' => 'La fecha de inicio no tiene un formato válido.',
-            'repeat.in' => 'El campo repeat debe ser: none, hourly, daily, weekly o custom.',
-            'cron_expression.required_if' => 'La expresión CRON es obligatoria si seleccionas "custom".'
+            'started_at.date' => 'La fecha de inicio no tiene un formato válido.'
         ]);
 
         if ($validator->fails()) {
@@ -67,8 +63,6 @@ class ExecutionController extends Controller
 
         $validated = $validator->validated();
         $type = $validated['execution_type'];
-        $repeat = $validated['repeat'] ?? 'none';
-        $cron = $validated['cron_expression'] ?? null;
         $status = 'pending';
         $startTime = $validated['started_at'] ?? now();
 
@@ -76,10 +70,7 @@ class ExecutionController extends Controller
             'api_call_mapping_id' => $mappingId,
             'execution_type' => $type,
             'status' => $status,
-            'started_at' => $startTime,
-            'repeat' => $repeat,
-            'cron_expression' => $cron,
-            'last_executed_at' => null,
+            'started_at' => $startTime
         ]);
 
         $msg = $type == 'manual' ? 'Ejecución creada' : 'Ejecución creada (aún no procesada)';
@@ -102,7 +93,7 @@ class ExecutionController extends Controller
                 }
                 break;
             case 'scheduled':
-                $msg = 'Ejecución programada creada correctamente.';
+                $msg = 'Ejecución programada registrada.';
                 break;
             default:
                 $msg = 'No se ha podido crear la petición';
@@ -116,90 +107,4 @@ class ExecutionController extends Controller
             'execution' => $execution
         ], $code);
     }
-
-    public function execute($id)
-    {
-        $execution = Execution::findOrFail($id);
-        $mapping = $execution->mapping;
-        if ($mapping->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
-            abort(403);
-        }
-
-        $msg = '';
-        $log = '';
-        try {
-            $response = $this->executionService->runExecution($execution);
-            $msg = $response['status'] == 'success' ? 'Ejecución completada correctamente.' : 'Error durante la ejecución.';
-            $code = $response['status'] == 'success' ? 200 : 500;
-            $execution->update([
-                'status' => $response['status'] ?? $execution->status,
-                'finished_at' => now(),
-                'last_executed_at' => now()
-            ]);
-            $log = $response;
-            $execution->refresh();
-        } catch (\Throwable $e) {
-            $execution->update([
-                'status' => 'failed',
-                'response_log' => ['error' => $e->getMessage()],
-                'finished_at' => now()
-            ]);
-            $msg = 'Error durante la ejecución.';
-            $log = $msg;
-            $code = 500;
-        }
-
-        return response()->json([
-            'msg' => $msg,
-            'execution' => $execution,
-            'log' => $log
-        ], $code);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $execution = Execution::findOrFail($id);
-
-        if ($execution->mapping->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
-            abort(403);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'started_at' => 'nullable|date',
-            'repeat' => 'nullable|in:none,hourly,daily,weekly,custom',
-            'cron_expression' => 'nullable|string|required_if:repeat,custom',
-        ], [
-            'started_at.date' => 'La fecha de inicio no tiene un formato válido.',
-            'repeat.in' => 'El campo repeat debe ser: none, hourly, daily, weekly o custom.',
-            'cron_expression.required_if' => 'La expresión CRON es obligatoria si seleccionas "custom".'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'msg' => 'Error en la validación',
-                'errors' => $validator->errors()
-            ], 400);
-        }
-
-        $execution->update($validator->validated());
-
-        return response()->json([
-            'msg' => 'Ejecución actualizada correctamente.',
-            'execution' => $execution
-        ]);
-    }
-
-    public function delete($id)
-    {
-        $execution = Execution::findOrFail($id);
-
-        if ($execution->mapping->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
-            abort(403);
-        }
-
-        $execution->delete();
-
-        return response()->json(['msg' => 'Ejecución eliminada correctamente.']);
-    }
-
 }
