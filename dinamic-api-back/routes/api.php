@@ -16,7 +16,7 @@ use App\Http\Controllers\Platforms\PlatformVersionController;
 use App\Http\Controllers\ApiCalls\ApiCallController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Group
     Route::get('/groups', [ApiGroupController::class, 'getAll']);
 
@@ -73,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/connections/{id}/credentials/{idKey}', [PlatformConnectionCredentialsController::class, 'deleteKey']);
 });
 
-Route::prefix('db-connections')->middleware('auth:sanctum')->group(function () {
+Route::prefix('db-connections')->middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::get('/', [DatabaseConnectionController::class, 'getAll']);
     });
@@ -89,7 +89,7 @@ Route::prefix('db-connections')->middleware('auth:sanctum')->group(function () {
     Route::get('{id}/tables/{table}/columns', [DatabaseSchemaController::class, 'getColumns']);
 });
 
-Route::prefix('api-calls')->middleware('auth:sanctum')->group(function () {
+Route::prefix('api-calls')->middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/{id}', [ApiCallController::class, 'get']);
     Route::get('/platform-version/{versionId}', [ApiCallController::class, 'getByPlatformVersion']);
     Route::get('/{id}/fields', [ApiCallController::class, 'getFields']);
@@ -102,7 +102,7 @@ Route::prefix('api-calls')->middleware('auth:sanctum')->group(function () {
     });
 });
 
-Route::prefix('mappings')->middleware('auth:sanctum')->group(function () {
+Route::prefix('mappings')->middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/', [ApiCallMappingController::class, 'getMappings']);
     Route::get('/{id}', [ApiCallMappingController::class, 'getSingle']);
     Route::post('/', [ApiCallMappingController::class, 'store']);
@@ -116,7 +116,7 @@ Route::prefix('mappings')->middleware('auth:sanctum')->group(function () {
 });
 
 // Executions
-Route::prefix('/executions')->middleware('auth:sanctum')->group(function () {
+Route::prefix('/executions')->middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/', [ExecutionController::class, 'list']);
     Route::get('/mappings/{id}', [ExecutionController::class, 'listByMapping']);
     Route::post('/mappings/{id}', [ExecutionController::class, 'store']);
