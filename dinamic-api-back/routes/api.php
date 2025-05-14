@@ -6,6 +6,7 @@ use App\Http\Controllers\DatabaseConnections\DatabaseConnectionController;
 use App\Http\Controllers\DatabaseConnections\DatabaseSchemaController;
 use App\Http\Controllers\Executions\ExecutionController;
 use App\Http\Controllers\Executions\HistoryExecutionController;
+use App\Http\Controllers\Executions\ScheduledExecutionController;
 use App\Http\Controllers\Platforms\ApiGroupController;
 use App\Http\Controllers\Platforms\PlatformConnectionController;
 use App\Http\Controllers\Platforms\PlatformConnectionCredentialsController;
@@ -114,11 +115,15 @@ Route::prefix('mappings')->middleware('auth:sanctum')->group(function () {
     Route::delete('/{id}/fields/{fieldId}', [ApiCallMappingFieldController::class, 'delete']);
 });
 
-    // Executions
+// Executions
 Route::prefix('/executions')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [ExecutionController::class, 'list']);
     Route::get('/mappings/{id}', [ExecutionController::class, 'listByMapping']);
-    Route::post('/mappings/{id}', [ExecutionController::class, 'execute']); // para iniciar ejecución
+    Route::post('/mappings/{id}', [ExecutionController::class, 'store']);
+    Route::post('/{id}/launch', [ExecutionController::class, 'execute']);
+    Route::put('/{id}', [ExecutionController::class, 'update']);
+    Route::delete('/{id}', [ExecutionController::class, 'delete']);
 
+    // History
     Route::get('/history/{executionId}', [HistoryExecutionController::class, 'show']);
 });
