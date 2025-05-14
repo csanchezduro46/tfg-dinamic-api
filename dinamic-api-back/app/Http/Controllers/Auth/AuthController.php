@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -62,12 +63,6 @@ class AuthController extends Controller
 
     public function signUp(Request $request)
     {
-        if (!auth()->check()) {
-            return response()->json([
-                'message' => 'No autenticado. Debes enviar un token válido.'
-            ], 401);
-        }
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
             'email' => 'required|string|max:100|email|unique:users,email',
@@ -95,12 +90,10 @@ class AuthController extends Controller
         ]);
 
         $user->assignRole('user');
-
-        $token = $user->createToken('apiToken')->plainTextToken;
+        $user->sendEmailVerificationNotification();
 
         $res = [
             'msg' => 'Usuario registrado correctamente, por favor, verifica el correo electrónico',
-            'token' => $token
         ];
         return response()->json(($res), 201);
     }
