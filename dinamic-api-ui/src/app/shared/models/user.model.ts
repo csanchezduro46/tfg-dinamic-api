@@ -4,4 +4,5 @@ export interface User {
   email: string;
   password?: string;
   roles?: any[];
+  email_verified_at?: Date;
 }
