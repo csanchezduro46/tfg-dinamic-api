@@ -8,20 +8,25 @@
                 <fa-icon [icon]="['fal', 'chart-line']"></fa-icon>
                 Dashboard
             </a>
-            <a routerLink="/api-rest" routerLinkActive="bg-gray-700"
-                class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
-                <fa-icon [icon]="['fal', 'server']"></fa-icon>
-                API REST
-            </a>
             <a routerLink="/external-integrations" routerLinkActive="bg-gray-700"
                 class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
                 <fa-icon [icon]="['fal', 'plug']"></fa-icon>
-                Conexiones externas
+                Plataformas externas
             </a>
             <a routerLink="/database-schema" routerLinkActive="bg-gray-700"
                 class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
                 <fa-icon [icon]="['fal', 'database']"></fa-icon>
-                Esquema BBDD
+                BBDD
+            </a>
+            <a routerLink="/call-mapping" routerLinkActive="bg-gray-700"
+                class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
+                <fa-icon [icon]="['fal', 'network-wired']"></fa-icon>
+                Conexiones
+            </a>
+            <a routerLink="/executions" routerLinkActive="bg-gray-700"
+                class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
+                <fa-icon [icon]="['fal', 'rotate']"></fa-icon>
+                Ejecuciones
             </a>
         </nav>
     </aside>
@@ -32,7 +37,7 @@
         <header class="bg-white shadow px-6 py-4 flex items-center justify-between">
             <h1 class="text-xl font-semibold text-gray-800">Panel de control</h1>
             <div class="flex items-center space-x-4 cursor-pointer">
-                <span class="text-sm text-gray-600">Cristina Sánchez</span>
+                <span class="text-sm text-gray-600">{{user?.name}}</span>
                 <button class="text-gray-500 hover:text-gray-700">
                     <fa-icon [icon]="['fal', 'right-from-bracket']"></fa-icon>
                 </button>

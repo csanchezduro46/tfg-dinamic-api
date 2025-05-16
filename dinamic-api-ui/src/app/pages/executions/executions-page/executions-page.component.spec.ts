@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApiRestPageComponent } from './api-rest-page.component';
+import { ExecutionsPageComponent } from './executions-page.component';
 
-describe('ApiRestPageComponent', () => {
-  let component: ApiRestPageComponent;
-  let fixture: ComponentFixture<ApiRestPageComponent>;
+describe('ExecutionsPageComponent', () => {
+  let component: ExecutionsPageComponent;
+  let fixture: ComponentFixture<ExecutionsPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ApiRestPageComponent]
+      imports: [ExecutionsPageComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ApiRestPageComponent);
+    fixture = TestBed.createComponent(ExecutionsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

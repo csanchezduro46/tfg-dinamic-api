@@ -34,11 +34,6 @@ export const routes: Routes = [
         title: 'Dashboard'
       },
       {
-        path: 'api-rest',
-        loadComponent: () => import('./pages/api-rest/api-rest-page/api-rest-page.component').then(m => m.ApiRestPageComponent),
-        title: 'API Rest'
-      },
-      {
         path: 'external-integrations',
         loadComponent: () => import('./pages/external-integrations/external-integrations-page/external-integrations-page.component').then(m => m.ExternalIntegrationsPageComponent),
         title: 'Integraciones'
@@ -47,6 +42,16 @@ export const routes: Routes = [
         path: 'database-schema',
         loadComponent: () => import('./pages/database-schema/database-schema-page/database-schema-page.component').then(m => m.DatabaseSchemaPageComponent),
         title: 'Esquemas'
+      },
+      {
+        path: 'call-mapping',
+        loadComponent: () => import('./pages/call-mappings/call-mappings-page/call-mappings-page.component').then(m => m.CallMappingsPageComponent),
+        title: 'Mapeos'
+      },
+      {
+        path: 'executions',
+        loadComponent: () => import('./pages/executions/executions-page/executions-page.component').then(m => m.ExecutionsPageComponent),
+        title: 'Ejecuciones'
       },
       {
         path: '',

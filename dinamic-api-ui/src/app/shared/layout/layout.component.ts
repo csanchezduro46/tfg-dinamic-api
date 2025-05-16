@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router, RouterLinkWithHref, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLinkWithHref, RouterModule, RouterOutlet } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fal } from '@fortawesome/pro-light-svg-icons';
 import { GenericErrorPopupComponent } from "../ui/generic-error-popup/generic-error-popup.component";
@@ -11,7 +11,7 @@ import { Subscriber } from 'rxjs';
 @Component({
   standalone: true,
   selector: 'app-layout',
-  imports: [RouterOutlet, CommonModule, FontAwesomeModule, RouterLinkWithHref, GenericErrorPopupComponent],
+  imports: [RouterOutlet, CommonModule, FontAwesomeModule, RouterLinkWithHref, GenericErrorPopupComponent, RouterModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })

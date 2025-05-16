@@ -1,1 +1,57 @@
-<p>external-integrations-page works!</p>
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">Conexiones a plataformas externas</h2>
+      <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer">
+        + Nueva conexión
+      </button>
+    </div>
+  
+    <div class="bg-white rounded-lg shadow overflow-auto">
+      <table class="w-full text-sm text-gray-700">
+        <thead class="bg-gray-100 border-b text-gray-600 font-semibold text-left">
+          <tr>
+            <th class="p-4">Nombre</th>
+            <th class="p-4">Plataforma</th>
+            <th class="p-4">Versión</th>
+            <th class="p-4">URL tienda</th>
+            <th class="p-4">Estado</th>
+            <th class="p-4">Última comprobación</th>
+            <th class="p-4 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let platform of platforms" class="border-b hover:bg-gray-50 transition">
+            <td class="p-4 font-medium">{{ platform.name }}</td>
+            <td class="p-4">{{ platform.version.platform.name }}</td>
+            <td class="p-4">{{ platform.version.version }}</td>
+            <td class="p-4">{{ platform.store_url }}</td>
+            <td class="p-4">
+              <span
+                class="px-2 py-1 rounded text-xs font-medium"
+                [ngClass]="{
+                  'bg-green-100 text-green-700': platform.status === 'success',
+                  'bg-red-100 text-red-700': platform.status !== 'success'
+                }"
+              >
+                {{ platform.status }}
+              </span>
+            </td>
+            <td class="p-4">{{ platform.last_checked_at | date: 'short' }}</td>
+            <td class="p-4 text-right space-x-2">
+              <button class="text-blue-600 hover:text-blue-800 cursor-pointer">
+                <fa-icon [icon]="['fas', 'pen']"></fa-icon>
+              </button>
+              <button (click)="onDelete(platform.id)" class="text-red-600 hover:text-red-800 cursor-pointer">
+                <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div *ngIf="!loading && platforms.length === 0" class="text-center text-gray-500 mt-6">
+      <p>No hay plataformas conectadas aún.</p>
+    </div>
+  </div>
+  

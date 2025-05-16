@@ -1,31 +1,48 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
+import { ErrorHandlerService } from '../errors/error-handler.service';
+import { catchError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ExecutionService {
-    constructor(private readonly http: HttpClient) { }
+    private readonly baseUrl = environment.apiUrl;
+
+    constructor(private readonly http: HttpClient, private readonly errorHandler: ErrorHandlerService) { }
 
     getAll() {
-        return this.http.get('/api/executions');
+        return this.http.get(`${this.baseUrl}/api/executions`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
     }
 
     getByMapping(id: number) {
-        return this.http.get(`/api/executions/mapping/${id}`);
+        return this.http.get(`${this.baseUrl}/api/executions/mapping/${id}`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
     }
 
     create(mappingId: number, data: any) {
-        return this.http.post(`/api/executions/mapping/${mappingId}/execute`, data);
+        return this.http.post(`${this.baseUrl}/api/executions/mapping/${mappingId}/execute`, data).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
     }
 
     update(id: number, data: any) {
-        return this.http.put(`/api/executions/${id}`, data);
+        return this.http.put(`${this.baseUrl}/api/executions/${id}`, data).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
     }
 
     delete(id: number) {
-        return this.http.delete(`/api/executions/${id}`);
+        return this.http.delete(`${this.baseUrl}/api/executions/${id}`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
     }
 
     launch(id: number) {
-        return this.http.post(`/api/executions/${id}/launch`, {});
+        return this.http.post(`${this.baseUrl}/api/executions/${id}/launch`, {}).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
     }
 }
