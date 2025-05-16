@@ -6,9 +6,8 @@ use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 // User login
-Route::middleware(['verified'])->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-});
+Route::post('/login', [AuthController::class, 'login']);
+
 // Recuperación de contraseña
 Route::post('/password/forgot', [PasswordController::class, 'sendResetLinkEmail']);
 Route::post('/password/reset', [PasswordController::class, 'reset']);
