@@ -4,42 +4,44 @@
         <div>
             <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Crear cuenta</h2>
 
-            <form (ngSubmit)="submit()" #form="ngForm" class="space-y-4">
+            <form (ngSubmit)="submit()" [formGroup]="form" class="space-y-4">
                 <!-- Nombre -->
                 <div>
-                    <input type="text" [(ngModel)]="name" name="name" placeholder="Nombre completo"
-                        [ngClass]="{'border-red-500': form.submitted && !name}" required
+                    <input type="text" formControlName="name" name="name" placeholder="Nombre completo"
+                        [ngClass]="{'border-red-500': isInvalid('name')}" required
                         class="text-sm w-full px-4 py-2 border border-gray-300 rounded-xl placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
                 </div>
 
                 <!-- Email -->
                 <div>
-                    <input type="email" [(ngModel)]="email" name="email" placeholder="Email"
-                        [ngClass]="{'border-red-500': form.submitted && email && !email.match('/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/')}"
+                    <input type="email" formControlName="email" name="email" placeholder="Email"
+                        [ngClass]="{'border-red-500': isInvalid('email') && !form.value.email?.match('/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/')}"
                         required
                         class="text-sm w-full px-4 py-2 border border-gray-300 rounded-xl placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
                 </div>
 
                 <!-- Contraseña -->
                 <div class="relative">
-                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password"
-                        placeholder="Contraseña" [ngClass]="{'border-red-500': form.submitted && password.length < 6}"
-                        required minlength="6"
+                    <input [type]="showPassword ? 'text' : 'password'" formControlName="password" name="password"
+                        placeholder="Contraseña"
+                        [ngClass]="{'border-red-500': isInvalid('password') || (submitted && form.value.password.length < 8)}"
+                        required minlength="8"
                         class="text-sm w-full px-4 py-2 border border-gray-300 rounded-xl placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
                 </div>
 
                 <!-- Confirmación -->
                 <div class="relative">
-                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password_confirmation"
+                    <input [type]="showPassword ? 'text' : 'password'" formControlName="password_confirmation"
                         name="password_confirmation" placeholder="Repite la contraseña"
-                        [ngClass]="{'border-red-500': form.submitted && password !== password_confirmation}" required
+                        [ngClass]="{'border-red-500': isInvalid('password_confirmation') || (submitted && form.value.password !== form.value.password_confirmation)}"
+                        required
                         class="text-sm w-full px-4 py-2 border border-gray-300 rounded-xl placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
                 </div>
 
                 <!-- Checkbox condiciones -->
                 <div class="flex items-center gap-2 text-sm">
-                    <input type="checkbox" [(ngModel)]="terms" name="terms" required />
-                    <label for="terms">
+                    <input type="checkbox" formControlName="terms" name="terms" required />
+                    <label for="terms" class="text-sm">
                         Acepto los <a href="#" class="text-blue-600 hover:underline">términos y condiciones</a>
                     </label>
                 </div>
@@ -66,5 +68,6 @@
     </div>
 </div>
 
-<!-- Dialog verificación -->
+<!-- Dialogs -->
 <app-generic-error-popup></app-generic-error-popup>
+<app-generic-success-popup></app-generic-success-popup>

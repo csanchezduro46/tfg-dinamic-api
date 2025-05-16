@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PasswordService } from '../../../shared/services/oauth/password.service';
 import { CommonModule } from '@angular/common';
 import { GenericErrorPopupComponent } from '../../../shared/ui/generic-error-popup/generic-error-popup.component';
+import { GenericSuccessPopupComponent } from '../../../shared/ui/generic-success-popup/generic-success-popup.component';
+import { GlobalSuccessService } from '../../../shared/services/generic/global-success.service';
 
 @Component({
   selector: 'app-reset-password',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, GenericErrorPopupComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, GenericErrorPopupComponent,
+    GenericSuccessPopupComponent],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
@@ -21,7 +24,9 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
-    private readonly passwordService: PasswordService
+    private readonly router: Router,
+    private readonly passwordService: PasswordService,
+    private readonly globalSuccessService: GlobalSuccessService
   ) { }
 
   ngOnInit(): void {
@@ -48,8 +53,12 @@ export class ResetPasswordComponent implements OnInit {
 
     this.passwordService.resetPassword(data)
       .subscribe({
-        next: (res: any) => this.msg = 'Contraseña restablecida correctamente.',
-        error: (err) => this.msg = 'Error al restablecer contraseña.'
+        next: (res: any) => {
+          this.msg = 'Contraseña restablecida correctamente.';
+          this.globalSuccessService.show('La contraseña se ha actualizado correctamente.', 'Contraseña actualizada');
+          this.router.navigate(['/login']);
+        },
+        error: (err) => this.msg = 'Error al restablecer la contraseña.'
       });
   }
 }
