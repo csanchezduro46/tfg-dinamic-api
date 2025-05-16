@@ -1,0 +1,60 @@
+<div class="min-h-screen bg-cover bg-center flex items-center justify-center"
+  [ngStyle]="{ 'background-image': 'url(img/login-bg.png)' }">
+  <div class="bg-white bg-opacity-90 rounded-xl shadow-xl w-full max-w-sm p-8 divide-y divide-gray-300">
+    <div>
+      <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Iniciar sesión</h2>
+
+      <form (ngSubmit)="submit()" [formGroup]="form" class="space-y-4">
+        <!-- Email -->
+        <div>
+          <input type="email" formControlName="email" name="email" placeholder="Email"
+            [ngClass]="{'border-red-500': isInvalid('email')}" required
+            class="text-sm w-full px-4 py-2 border border-gray-300 rounded-xl placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <input type="password" formControlName="password" name="password" placeholder="Contraseña"
+            [ngClass]="{'border-red-500': form.touched && !form.value.password}" required
+            class="text-sm w-full px-4 py-2 border border-gray-300 rounded-xl placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        </div>
+
+        <!-- Botón -->
+        <button type="submit" [disabled]="loading"
+          class="text-sm w-full bg-green-500 text-white-800 font-semibold py-2 rounded-xl hover:bg-green-400 transition cursor-pointer">
+          Entrar
+        </button>
+
+        <!-- Opciones extra -->
+        <div class="text-sm text-right mb-6">
+          <!-- <label class="flex items-center">
+          <input type="checkbox" class="mr-2" /> Recordarme
+        </label> -->
+          <a (click)="toggleForgot()" class="text-xs text-sky-600 hover:underline cursor-pointer text-right">¿Has
+            olvidado tu contraseña?</a>
+        </div>
+      </form>
+
+      <!-- Mensaje de error -->
+      <p *ngIf="error" class="text-red-600 mt-2 mb-2 text-sm">{{ error }}</p>
+    </div>
+    <div>
+      <!-- Enlace a registro -->
+      <div class="mt-6 text-sm text-center text-gray-600">
+        ¿Aún no tienes cuenta?
+        <a routerLink="/register" class="text-sky-600 hover:underline"> Regístrate.</a>
+      </div>
+
+      <div class="text-xs text-gray-400 text-center mt-4">
+        ¿No encuentras el correo de verificación?
+        <a (click)="toggleResend()" class="text-neutral-600 hover:underline cursor-pointer">Volver a mandarlo.</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dialogs -->
+<app-forgot-password-dialog *ngIf="showForgot" [close]="toggleForgot.bind(this)"></app-forgot-password-dialog>
+<app-resend-verify-email *ngIf="showResend" [close]="toggleResend.bind(this)"></app-resend-verify-email>
+<app-generic-error-popup></app-generic-error-popup>
+<app-generic-success-popup></app-generic-success-popup>
