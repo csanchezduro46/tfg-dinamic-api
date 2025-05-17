@@ -33,11 +33,11 @@ export class PlatformFormComponent implements OnInit {
 
     if (this.platform?.id) {
       this.platformService.update(this.platform.id, data).subscribe(() => {
-        this.cancel.emit();
+        this.submit.emit();
       });
     } else {
       this.platformService.create(data).subscribe(() => {
-        this.cancel.emit();
+        this.submit.emit();
       });
     }
   }

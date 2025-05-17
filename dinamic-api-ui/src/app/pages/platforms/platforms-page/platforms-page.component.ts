@@ -20,10 +20,9 @@ export class PlatformsPageComponent implements OnInit {
   loading = false;
   user!: User;
   admin: boolean = false;
+
   editing: any = null;
   confirmDeleteId: number | null = null;
-
-  editingPlatform: any = null;
   showFormPopup = false;
 
   constructor(private readonly platformService: PlatformService, library: FaIconLibrary,
@@ -55,7 +54,7 @@ export class PlatformsPageComponent implements OnInit {
     this.editing = platform;
     this.showFormPopup = true;
   }
-  
+
   onNew(): void {
     this.editing = null;
     this.showFormPopup = true;
@@ -63,8 +62,10 @@ export class PlatformsPageComponent implements OnInit {
 
   onSaved(): void {
     this.showFormPopup = false;
-    this.fetch();
     this.editing = null;
+    setTimeout(() => {
+      this.fetch();
+    }, 1000);
   }
 
   askDelete(id: number): void {
@@ -75,10 +76,10 @@ export class PlatformsPageComponent implements OnInit {
     if (this.confirmDeleteId) {
       this.platformService.delete(this.confirmDeleteId).subscribe({
         next: () => {
-          this.fetch();
+          this.platforms = this.platforms.filter(p => p.id !== this.confirmDeleteId);
           this.confirmDeleteId = null;
-        },
-        error: () => alert('Error al eliminar')
+          this.fetch();
+        }
       });
     }
   }
