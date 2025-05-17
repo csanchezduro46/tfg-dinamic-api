@@ -1,6 +1,7 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+            *ngIf="user?.roles?.includes('admin')">
             + Nueva plataforma
         </button>
     </div>
@@ -12,7 +13,7 @@
                     <th class="p-4">Nombre</th>
                     <th class="p-4">Slug</th>
                     <th class="p-4">Creado</th>
-                    <th class="p-4 text-right">Acciones</th>
+                    <th class="p-4 text-right" *ngIf="user?.roles?.includes('admin')">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,7 +21,7 @@
                     <td class="p-4 font-medium">{{ p.name }}</td>
                     <td class="p-4">{{ p.slug }}</td>
                     <td class="p-4">{{ p.created_at | date: 'short' }}</td>
-                    <td class="p-4 text-right space-x-2">
+                    <td class="p-4 text-right space-x-2" *ngIf="user?.roles?.includes('admin')">
                         <button class="text-blue-600 hover:text-blue-800">
                             <fa-icon [icon]="['fas', 'pen']"></fa-icon>
                         </button>

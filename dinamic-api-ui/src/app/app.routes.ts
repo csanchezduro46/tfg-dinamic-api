@@ -57,19 +57,19 @@ export const routes: Routes = [
           {
             path: 'list',
             loadComponent: () =>
-              import('./pages/external-integrations/platforms-page/platforms-page.component').then(m => m.PlatformsPageComponent),
+              import('./pages/platforms/platforms-page/platforms-page.component').then(m => m.PlatformsPageComponent),
             title: 'Plataformas'
           },
           {
             path: 'versions',
             loadComponent: () =>
-              import('./pages/external-integrations/platform-versions-page/platform-versions-page.component').then(m => m.PlatformVersionsPageComponent),
+              import('./pages/platforms/platform-versions-page/platform-versions-page.component').then(m => m.PlatformVersionsPageComponent),
             title: 'Versiones'
           },
           {
             path: 'apis',
             loadComponent: () =>
-              import('./pages/external-integrations/platform-apis-page/platform-apis-page.component').then(m => m.PlatformApisPageComponent),
+              import('./pages/platforms/platform-apis-page/platform-apis-page.component').then(m => m.PlatformApisPageComponent),
             title: 'APIs'
           }
         ]
@@ -111,11 +111,12 @@ export const routes: Routes = [
             title: 'Conexiones'
           },
           {
-            path: 'fields',
+            path: 'mappings/fields/:id',
             loadComponent: () =>
               import('./pages/call-mappings/call-mapping-fields-page/call-mapping-fields-page.component').then(m => m.CallMappingFieldsPageComponent),
-            title: 'Mapeos'
+            title: 'Campos del mapeo'
           }
+
         ]
       },
 
@@ -143,6 +144,7 @@ export const routes: Routes = [
           }
         ]
       },
+      { path: '**', redirectTo: 'dashboard' }
     ]
   },
 

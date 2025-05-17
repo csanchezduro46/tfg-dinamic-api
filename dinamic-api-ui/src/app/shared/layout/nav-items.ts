@@ -17,26 +17,18 @@ export const NAV_ITEMS: NavGroup[] = [
     label: 'Plataformas externas',
     icon: ['fal', 'plug'],
     children: [
-      { label: 'Mis plataformas', path: '/external-integrations' },
       { label: 'Plataformas', path: '/platforms/list' },
       { label: 'Versiones', path: '/platforms/versions' },
       { label: 'APIs', path: '/platforms/apis' }
     ]
   },
   {
-    label: 'BBDD',
+    label: 'Mis conexiones',
     icon: ['fal', 'database'],
     children: [
+      { label: 'Mis plataformas', path: '/external-integrations' },
       { label: 'Mis BBDD', path: '/databases/list' },
-      { label: 'Esquemas', path: '/databases/schemas' }
-    ]
-  },
-  {
-    label: 'Conexiones',
-    icon: ['fal', 'server'],
-    children: [
       { label: 'Conexiones', path: '/connections/mappings' },
-      { label: 'Mapeos', path: '/connections/fields' }
     ]
   },
   {

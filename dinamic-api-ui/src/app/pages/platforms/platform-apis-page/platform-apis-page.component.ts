@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { User } from '../../../core/models/user.model';
 import { ApiCallService } from '../../../shared/services/api/api-call.service';
+import { AuthService } from '../../../shared/services/oauth/auth.service';
 
 @Component({
   selector: 'app-platform-apis-page',
@@ -13,10 +15,12 @@ import { ApiCallService } from '../../../shared/services/api/api-call.service';
 export class PlatformApisPageComponent implements OnInit {
   apis: any[] = [];
   loading = false;
+  user!: User;
 
-  constructor(private readonly apisService: ApiCallService) { }
+  constructor(private readonly apisService: ApiCallService, private readonly auth: AuthService) { }
 
   ngOnInit(): void {
+    this.user = this.auth.getUser();
     this.loading = true;
     this.apisService.getAll().subscribe({
       next: (data) => {

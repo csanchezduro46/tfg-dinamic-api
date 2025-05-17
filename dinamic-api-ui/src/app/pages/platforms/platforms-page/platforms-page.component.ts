@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { User } from '../../../core/models/user.model';
 import { PlatformService } from '../../../shared/services/api/platform.service';
+import { AuthService } from '../../../shared/services/oauth/auth.service';
 
 @Component({
   selector: 'app-platforms-page',
@@ -14,12 +16,15 @@ import { PlatformService } from '../../../shared/services/api/platform.service';
 export class PlatformsPageComponent implements OnInit {
   platforms: any[] = [];
   loading = false;
+  user!: User;
 
-  constructor(private readonly platformService: PlatformService, library: FaIconLibrary) {
+  constructor(private readonly platformService: PlatformService, library: FaIconLibrary,
+    private readonly auth: AuthService) {
     library.addIconPacks(fas);
   }
 
   ngOnInit(): void {
+    this.user = this.auth.getUser();
     this.loading = true;
     this.platformService.getAll().subscribe({
       next: (data) => {

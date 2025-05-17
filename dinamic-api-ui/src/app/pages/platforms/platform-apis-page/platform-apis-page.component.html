@@ -1,7 +1,8 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
-            + Nueva versión
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+            *ngIf="user?.roles?.includes('admin')">
+            + Nueva API
         </button>
     </div>
 
@@ -9,24 +10,26 @@
         <table class="w-full text-sm text-gray-700">
             <thead class="bg-gray-100 border-b text-gray-600 font-semibold text-left">
                 <tr>
-                    <th class="p-4">Versión</th>
-                    <th class="p-4">Descripción</th>
+                    <th class="p-4">Nombre</th>
+                    <th class="p-4">Grupo</th>
+                    <th class="p-4">Endpoint</th>
                     <th class="p-4">Plataforma</th>
-                    <th class="p-4">Fecha</th>
-                    <th class="p-4 text-right">Acciones</th>
+                    <th class="p-4">Versión</th>
+                    <th class="p-4 text-right" *ngIf="user?.roles?.includes('admin')">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let v of versions" class="border-b hover:bg-gray-50">
-                    <td class="p-4 font-medium">{{ v.version }}</td>
-                    <td class="p-4">{{ v.description }}</td>
-                    <td class="p-4">{{ v.platform?.name || '-' }}</td>
-                    <td class="p-4">{{ v.created_at | date: 'short' }}</td>
-                    <td class="p-4 text-right space-x-2">
+                <tr *ngFor="let api of apis" class="border-b hover:bg-gray-50">
+                    <td class="p-4 font-medium">{{ api.name }}</td>
+                    <td class="p-4">{{ api.group?.name }}</td>
+                    <td class="p-4">{{ api.endpoint }}</td>
+                    <td class="p-4">{{ api.version?.platform?.name || '-' }}</td>
+                    <td class="p-4">{{ api.version?.version || '-' }}</td>
+                    <td class="p-4 text-right space-x-2" *ngIf="user?.roles?.includes('admin')">
                         <button class="text-blue-600 hover:text-blue-800">
                             <fa-icon [icon]="['fas', 'pen']"></fa-icon>
                         </button>
-                        <button (click)="onDelete(v.id)" class="text-red-600 hover:text-red-800">
+                        <button (click)="onDelete(api.id)" class="text-red-600 hover:text-red-800">
                             <fa-icon [icon]="['fas', 'trash']"></fa-icon>
                         </button>
                     </td>
@@ -42,8 +45,8 @@
                     </td>
                 </tr>
 
-                <tr *ngIf="!loading && versions.length === 0">
-                    <td colspan="5" class="text-center p-4 text-gray-500">No hay versiones registradas.</td>
+                <tr *ngIf="!loading && apis.length === 0">
+                    <td colspan="5" class="text-center p-4 text-gray-500">No hay APIs registradas.</td>
                 </tr>
             </tbody>
         </table>
