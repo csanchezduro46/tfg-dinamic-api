@@ -67,13 +67,9 @@ export class CallMappingsPageComponent implements OnInit {
     }
   }
 
-  onNew() {
-
-  }
-
   launchMapping(mapping: any) {
     this.loadingMapping = true;
-    this.executionService.launch(mapping.id).subscribe({
+    this.executionService.create(mapping.id, {execution_type: 'manual'}).subscribe({
       next: () => {
         this.globalSuccessService.show('La sincronización se ha realizado correctamente.', 'Sincronización completa');
         this.loadingMapping = false;

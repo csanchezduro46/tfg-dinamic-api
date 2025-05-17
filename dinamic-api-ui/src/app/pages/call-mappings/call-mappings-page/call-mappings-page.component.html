@@ -17,7 +17,7 @@
                     <th class="p-4">Estado BBDD</th>
                     <th class="p-4">Última modificación</th>
                     <th class="p-4" *ngIf="admin">Usuario</th>
-                    <!-- <th class="p-4"></th> -->
+                    <th class="p-4"></th>
                     <th class="p-4 text-right">Acciones</th>
                 </tr>
             </thead>
@@ -49,13 +49,13 @@
                     </td>
                     <td class="p-4">{{ mapping.updated_at | date: 'short' }}</td>
                     <td class="p-4" *ngIf="admin">{{ mapping.user?.name }}</td>
-                    <!-- <td class="p-4 text-right">
+                    <td class="p-4 text-right">
                         <button
                             class="text-gray-600 hover:text-gray-800 border-2 py-1 px-2 rounded-xl border-green-600 mr-2 cursor-pointer"
                             (click)="launchMapping(mapping)">
                             <span class="text-green-800">Lanzar</span>
                         </button>
-                    </td> -->
+                    </td>
                     <td class="p-4 text-right space-x-2">
                         <a [routerLink]="['/connections/mappings/fields', mapping.id]"
                             class="text-esmerald-600 hover:text-blue-800 text-sm cursor-pointer">

@@ -1,7 +1,8 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
-            Ejecutar mapeo
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer"
+            (click)="openExecutionModal()">
+            Ejecutar sincronización
         </button>
     </div>
 
@@ -39,12 +40,17 @@
                         {{ execution.repeat === 'none' ? '-' : execution.repeat }}
                     </td>
                     <td class="p-4 text-right space-x-2">
-                        <button class="text-blue-600 hover:text-blue-800" title="Ver log">
+                        <!-- <button class="text-blue-600 hover:text-blue-800 cursor-pointer" title="Ver log"
+                            (click)="openLog(execution)">
                             <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                        </button> -->
+                        <button class="text-yellow-600 hover:text-yellow-800 cursor-pointer" title="Repetir"
+                            (click)="repeat(execution)">
+                            <fa-icon [icon]="['fas', 'repeat']"></fa-icon>
                         </button>
-                        <button class="text-red-600 hover:text-red-800" title="Eliminar">
+                        <!-- <button class="text-red-600 hover:text-red-800" title="Eliminar">
                             <fa-icon [icon]="['fas', 'trash']"></fa-icon>
-                        </button>
+                        </button> -->
                     </td>
                 </tr>
                 <tr *ngIf="loading">
@@ -63,5 +69,18 @@
 
     <div *ngIf="!loading && executions.length === 0" class="text-center text-gray-500 mt-6">
         <p>No hay ejecuciones registradas aún.</p>
+    </div>
+</div>
+
+<!-- Modal de ejecución manual -->
+<app-execution-modal [mappings]="mappings" [visible]="showExecuteModal" (close)="showExecuteModal = false"
+    (executed)="runExecution()" (finish)="finishExecution()">
+</app-execution-modal>
+
+<!-- Spinner de pantalla completa -->
+<div *ngIf="executionLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/5 backdrop-blur-md">
+    <div class="flex flex-col items-center gap-4 text-gray-700">
+        <div class="h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm font-medium">Ejecutando...</p>
     </div>
 </div>
