@@ -41,9 +41,26 @@ export const routes: Routes = [
       // 🧩 Plataformas
       {
         path: 'external-integrations',
-        loadComponent: () =>
-          import('./pages/external-integrations/external-integrations-page/external-integrations-page.component').then(m => m.ExternalIntegrationsPageComponent),
-        title: 'Mis plataformas'
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/external-integrations/external-integrations-page/external-integrations-page.component').then(m => m.ExternalIntegrationsPageComponent),
+            title: 'Conexiones externas'
+          },
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('./pages/external-integrations/external-integration-create-page/external-integration-create-page.component').then(m => m.ExternalIntegrationCreatePage),
+            title: 'Formulario'
+          },
+          {
+            path: 'edit/:id',
+            loadComponent: () =>
+              import('./pages/external-integrations/external-integration-create-page/external-integration-create-page.component').then(m => m.ExternalIntegrationCreatePage),
+            title: 'Formulario'
+          }
+        ]
       },
       {
         path: 'platforms',

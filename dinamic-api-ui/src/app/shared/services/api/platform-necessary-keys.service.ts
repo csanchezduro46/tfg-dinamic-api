@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { ErrorHandlerService } from '../errors/error-handler.service';
-import { catchError } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PlatformNecessaryKeysService {
@@ -10,7 +10,7 @@ export class PlatformNecessaryKeysService {
 
     constructor(private readonly http: HttpClient, private readonly errorHandler: ErrorHandlerService) { }
 
-    get(platformId: number) {
+    get(platformId: number): Observable<any> {
         return this.http.get(`${this.baseUrl}/api/platforms/${platformId}/necessary-keys`).pipe(
             catchError(err => this.errorHandler.handle(err))
         );

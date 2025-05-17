@@ -29,7 +29,7 @@ class PlatformConnectionController extends Controller
         if ($connection->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
             abort(403, 'Forbidden');
         }
-        return response()->json($connection->with(['version.platform', 'user'])->get());
+        return response()->json($connection->load('version.platform', 'user'));
 
     }
 
