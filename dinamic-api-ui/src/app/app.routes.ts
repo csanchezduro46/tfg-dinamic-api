@@ -74,7 +74,7 @@ export const routes: Routes = [
           {
             path: 'list',
             loadComponent: () =>
-              import('./pages/platforms/platforms-page/platforms-page.component').then(m => m.PlatformsPageComponent),
+              import('./pages/external-integrations/platforms-page/platforms-page.component').then(m => m.PlatformsPageComponent),
             title: 'Plataformas'
           },
           {
@@ -132,8 +132,19 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./pages/call-mappings/call-mapping-fields-page/call-mapping-fields-page.component').then(m => m.CallMappingFieldsPageComponent),
             title: 'Campos del mapeo'
+          },
+          {
+            path: 'mappings/create',
+            loadComponent: () =>
+              import('./pages/call-mappings/call-mapping-create-page/call-mapping-create-page.component').then(m => m.CallMappingCreatePageComponent),
+            title: 'Crear mapeo de conexión'
+          },
+          {
+            path: 'mappings/edit/:id',
+            loadComponent: () =>
+              import('./pages/call-mappings/call-mapping-create-page/call-mapping-create-page.component').then(m => m.CallMappingCreatePageComponent),
+            title: 'Editar mapeo de conexión'
           }
-
         ]
       },
 

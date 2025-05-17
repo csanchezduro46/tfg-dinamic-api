@@ -58,7 +58,7 @@ export class ExternalIntegrationCreatePage implements OnInit {
       name: ['', Validators.required],
       platform_id: ['', Validators.required],
       platform_version_id: ['', Validators.required],
-      store_url: ['', Validators.required]
+      store_url: ['', Validators.required],
     });
 
     this.credentialsForm = this.fb.group({});
@@ -113,7 +113,6 @@ export class ExternalIntegrationCreatePage implements OnInit {
       this.loadingCredentials = false;
     });
   }
-
 
   filteredVersions() {
     const platformId = this.connectionForm.get('platform_id')?.value;

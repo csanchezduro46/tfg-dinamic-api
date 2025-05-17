@@ -6,7 +6,7 @@ import { User } from '../../../core/models/user.model';
 import { PlatformService } from '../../../shared/services/api/platform.service';
 import { AuthService } from '../../../shared/services/oauth/auth.service';
 import { ConfirmPopupComponent } from '../../../shared/ui/confirm-popup/confirm-popup.component';
-import { PlatformFormComponent } from '../platform-form/platform-form.component';
+import { PlatformFormComponent } from '../../platforms/platform-form/platform-form.component';
 
 @Component({
   selector: 'app-platforms-page',

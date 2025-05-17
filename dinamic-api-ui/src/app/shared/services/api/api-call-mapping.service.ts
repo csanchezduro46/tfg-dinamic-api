@@ -23,7 +23,7 @@ export class ApiCallMappingService {
     }
 
     create(data: any): Observable<any> {
-        return this.http.post('${this.baseUrl}/api/mappings', data).pipe(
+        return this.http.post(`${this.baseUrl}/api/mappings`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }
