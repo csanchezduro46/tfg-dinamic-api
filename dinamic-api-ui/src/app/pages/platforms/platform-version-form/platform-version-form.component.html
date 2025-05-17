@@ -22,7 +22,7 @@
             <!-- Selector de plataforma -->
             <div>
               <label class="block text-sm font-medium text-gray-700">Plataforma*</label>
-              <select formControlName="platform_id" placeholder="Selecciona una plataforma" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+              <select formControlName="platform_id" placeholder="Selecciona una plataforma" class="mt-1 w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
                 <option *ngFor="let p of platforms" [value]="p.id">{{ p.name }}</option>
               </select>
             </div>

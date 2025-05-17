@@ -17,7 +17,7 @@ export class PlatformVersionService {
         );
     }
 
-    getByPlatform(platformId: number) {
+    getByPlatform(platformId: number): Observable<any> {
         return this.http.get(`${this.baseUrl}/api/platforms/${platformId}/versions`).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
