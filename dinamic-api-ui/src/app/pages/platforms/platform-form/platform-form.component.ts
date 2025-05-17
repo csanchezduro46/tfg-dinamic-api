@@ -22,7 +22,7 @@ export class PlatformFormComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       name: [this.platform?.name || '', Validators.required],
-      slug: [this.platform?.slug || '', Validators.required]
+      slug: [this.platform?.slug || '', [Validators.required, Validators.pattern(/^[a-z0-9-]+$/)]]
     });
   }
 

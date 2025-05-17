@@ -15,7 +15,7 @@ class PlatformConnectionController extends Controller
 {
     public function getAll()
     {
-        return response()->json(PlatformConnection::with('version.platform')->get());
+        return response()->json(PlatformConnection::with('version.platform', 'user')->get());
     }
 
     public function getByUser()
@@ -29,7 +29,7 @@ class PlatformConnectionController extends Controller
         if ($connection->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
             abort(403, 'Forbidden');
         }
-        return response()->json($connection->with(['version.platform'])->get());
+        return response()->json($connection->with(['version.platform', 'user'])->get());
 
     }
 
@@ -68,7 +68,7 @@ class PlatformConnectionController extends Controller
         if (!Auth::user()->hasRole('admin')) {
             $validated['user_id'] = Auth::id();
         }
-        $connection = PlatformConnection::create($validated)->load('version.platform');
+        $connection = PlatformConnection::create($validated)->load('version.platform', 'user');
 
         return response()->json([
             'msg' => 'Conexión creada correctamente.',

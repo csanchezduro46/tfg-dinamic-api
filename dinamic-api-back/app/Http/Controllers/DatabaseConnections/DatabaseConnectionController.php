@@ -21,7 +21,7 @@ class DatabaseConnectionController extends Controller
 
     public function getAll()
     {
-        return response()->json(DatabaseConnection::all());
+        return response()->json(DatabaseConnection::with('user')->get());
     }
 
     public function getConnectionsUser()
@@ -163,7 +163,7 @@ class DatabaseConnectionController extends Controller
             'connection' => $connection
         ];
 
-        return response()->json($response, $result !== true ? 200 : 422);
+        return response()->json($response, $result !== true ? 422 : 200);
     }
 
     public function test(DatabaseConnection $connection, $create)

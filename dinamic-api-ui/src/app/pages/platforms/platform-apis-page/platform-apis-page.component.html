@@ -1,6 +1,6 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow cursor-pointer" *ngIf="admin"
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer" *ngIf="admin"
             (click)="onNew()">
             + Nueva API
         </button>
@@ -59,7 +59,7 @@
 </div>
 
 <!-- Diálogo de confirmación -->
-<app-confirm-popup *ngIf="confirmDeleteId" [title]="'Eliminar versión'"
+<app-confirm-popup *ngIf="confirmDeleteId" [title]="'Eliminar llamada'"
     [message]="'¿Estás seguro de eliminar esta llamada (API)? Se eliminarán todas las conexiones y datos que tenga relacionados.'"
     (confirm)="confirmDelete()" (cancel)="confirmDeleteId = null">
 </app-confirm-popup>

@@ -29,7 +29,7 @@ export class DatabaseConnectionService {
     }
 
     create(data: any): Observable<any> {
-        return this.http.post('${this.baseUrl}/api/db-connections', data).pipe(
+        return this.http.post(`${this.baseUrl}/api/db-connections`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }
