@@ -62,4 +62,23 @@ export class AuthService {
             catchError(err => this.errorHandler.handle(err))
         );
     }
+
+    hasRole(role: string): boolean {
+        const roles = this.getUser()?.roles;
+      
+        if (!roles) return false;
+      
+        if (Array.isArray(roles)) {
+          if (typeof roles[0] === 'string') {
+            return roles.includes(role);
+          }
+      
+          if (typeof roles[0] === 'object') {
+            return roles.some(r => r.name === role);
+          }
+        }
+      
+        return false;
+      }
+      
 }
