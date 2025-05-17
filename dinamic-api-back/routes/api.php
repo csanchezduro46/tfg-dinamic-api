@@ -46,9 +46,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // Versiones
     Route::get('/platforms/{id}/versions', [PlatformVersionController::class, 'getByPlatform']);
+    Route::get('/versions', [PlatformVersionController::class, 'getAll']);
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('/versions', [PlatformVersionController::class, 'getAll']);
         Route::post('/platforms/{id}/versions', [PlatformVersionController::class, 'store']);
         Route::put('/versions/{id}', [PlatformVersionController::class, 'update']);
         Route::delete('/versions/{id}', [PlatformVersionController::class, 'delete']);
@@ -90,12 +90,12 @@ Route::prefix('db-connections')->middleware(['auth:sanctum', 'verified'])->group
 });
 
 Route::prefix('api-calls')->middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/', [ApiCallController::class, 'getAll']);
     Route::get('/{id}', [ApiCallController::class, 'get']);
     Route::get('/platform-version/{versionId}', [ApiCallController::class, 'getByPlatformVersion']);
     Route::get('/{id}/fields', [ApiCallController::class, 'getFields']);
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('/', [ApiCallController::class, 'getAll']);
         Route::post('/', [ApiCallController::class, 'store']);
         Route::put('/{id}', [ApiCallController::class, 'update']);
         Route::delete('/{id}', [ApiCallController::class, 'delete']);

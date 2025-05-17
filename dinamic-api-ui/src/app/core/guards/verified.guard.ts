@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 
 export const verifiedGuard: CanActivateFn = () => {
     const router = inject(Router);
-    const userRaw = localStorage.getItem('user');
+    const userRaw = localStorage.getItem('auth_user');
 
     if (!userRaw) return router.parseUrl('/login');
 

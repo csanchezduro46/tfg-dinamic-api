@@ -10,32 +10,44 @@ export class ApiCallService {
 
     constructor(private readonly http: HttpClient, private readonly errorHandler: ErrorHandlerService) { }
 
+    getAll(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/api/api-calls`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
+    }
+
     getByVersion(versionId: number): Observable<any> {
-        return this.http.get(`${this.baseUrl}/api/calls/version/${versionId}`).pipe(
+        return this.http.get(`${this.baseUrl}/api/api-calls/platform-version/${versionId}`).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }
 
     get(id: number): Observable<any> {
-        return this.http.get(`${this.baseUrl}/api/calls/${id}`).pipe(
+        return this.http.get(`${this.baseUrl}/api/api-calls/${id}`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
+    }
+
+    getFields(id: number): Observable<any> {
+        return this.http.get(`${this.baseUrl}/api/api-calls/${id}/fields`).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }
 
     create(versionId: number, data: any): Observable<any> {
-        return this.http.post(`${this.baseUrl}/api/calls/version/${versionId}`, data).pipe(
+        return this.http.post(`${this.baseUrl}/api/api-calls/${versionId}`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }
 
     update(id: number, data: any): Observable<any> {
-        return this.http.put(`${this.baseUrl}/api/calls/${id}`, data).pipe(
+        return this.http.put(`${this.baseUrl}/api/api-calls/${id}`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }
 
     delete(id: number): Observable<any> {
-        return this.http.delete(`${this.baseUrl}/api/calls/${id}`).pipe(
+        return this.http.delete(`${this.baseUrl}/api/api-calls/${id}`).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }

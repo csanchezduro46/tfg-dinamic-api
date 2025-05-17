@@ -41,7 +41,6 @@ export class LoginComponent {
       this.globalErrorService.show('Comprueba todos los campos por favor.')
       return;
     }
-
     this.auth.login({ email: this.form.value.email, password: this.form.value.password }).subscribe({
       next: (res) => {
         this.loading = false;
@@ -50,9 +49,10 @@ export class LoginComponent {
         //   this.globalSuccessService.show('Debes verificar antes el correo electrónico para poder iniciar sesión.', 'Verifica tu cuenta de correo');
         //   return;
         // }
-
+        
+        this.auth.setUser(res.user)
         localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify(res.user));
+        localStorage.setItem('auth_user', JSON.stringify(res.user));
         this.router.navigate(['/dashboard']);
       },
       error: () => {

@@ -1,6 +1,5 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-semibold">Conexiones a bases de datos</h2>
         <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow">
             + Nueva conexión
         </button>
@@ -41,6 +40,16 @@
                         <button (click)="onDelete(db.id)" class="text-red-600 hover:text-red-800">
                             <fa-icon [icon]="['fas', 'trash']"></fa-icon>
                         </button>
+                    </td>
+                </tr>
+                <tr *ngIf="loading">
+                    <td colspan="7" class="p-6 text-center">
+                        <div class="flex justify-center items-center gap-2 text-blue-600">
+                            <div
+                                class="animate-spin h-5 w-5 border-4 border-blue-500 border-t-transparent rounded-full">
+                            </div>
+                            <span>Cargando datos...</span>
+                        </div>
                     </td>
                 </tr>
             </tbody>
