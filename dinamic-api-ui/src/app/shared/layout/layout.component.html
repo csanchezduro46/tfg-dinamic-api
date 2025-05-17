@@ -1,28 +1,21 @@
+<!-- Layout global -->
 <div class="flex h-screen">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex-shrink-0">
-        <div class="p-4 font-bold text-xl border-b border-gray-700">Dinamic API</div>
-        <nav class="p-4 flex flex-col space-y-4">
-            <a routerLink="/dashboard" routerLinkActive="bg-gray-700"
-                class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
-                <fa-icon [icon]="['fal', 'chart-line']"></fa-icon>
-                Dashboard
-            </a>
-            <a routerLink="/api-rest" routerLinkActive="bg-gray-700"
-                class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
-                <fa-icon [icon]="['fal', 'server']"></fa-icon>
-                API REST
-            </a>
-            <a routerLink="/external-integrations" routerLinkActive="bg-gray-700"
-                class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
-                <fa-icon [icon]="['fal', 'plug']"></fa-icon>
-                Conexiones externas
-            </a>
-            <a routerLink="/database-schema" routerLinkActive="bg-gray-700"
-                class="cursor-pointer hover:bg-gray-700 px-3 py-2 rounded flex items-center gap-2 w-full text-left">
-                <fa-icon [icon]="['fal', 'database']"></fa-icon>
-                Esquema BBDD
-            </a>
+    <!-- Sidebar dinámico -->
+    <aside class="w-64 bg-white text-gray-800 flex-shrink-0 h-screen overflow-y-auto shadow-lg">
+        <div class="p-4 font-bold text-xl border-b border-gray-300 shadow-sm">Dinamic API</div>
+        <nav class="p-4 flex flex-col space-y-6 text-md">
+            <div *ngFor="let group of navItems">
+                <div class="text-gray-500 uppercase text-xs mb-1 flex items-center gap-2">
+                    <fa-icon *ngIf="group.icon" [icon]="group.icon"></fa-icon>
+                    {{ group.label }}
+                </div>
+                <div class="flex flex-col gap-1 pl-2 my-2 ml-2">
+                    <a *ngFor="let item of group.children" [routerLink]="item.path" routerLinkActive="text-blue-400"
+                        class="hover:underline">
+                        {{ item.label }}
+                    </a>
+                </div>
+            </div>
         </nav>
     </aside>
 
@@ -30,12 +23,34 @@
     <div class="flex-1 flex flex-col">
         <!-- Topbar -->
         <header class="bg-white shadow px-6 py-4 flex items-center justify-between">
-            <h1 class="text-xl font-semibold text-gray-800">Panel de control</h1>
-            <div class="flex items-center space-x-4 cursor-pointer">
-                <span class="text-sm text-gray-600">Cristina Sánchez</span>
-                <button class="text-gray-500 hover:text-gray-700">
-                    <fa-icon [icon]="['fal', 'right-from-bracket']"></fa-icon>
+            <h1 class="text-xl font-semibold text-gray-800">{{pageTitle}}</h1>
+
+            <div class="relative" (clickOutside)="showMenu = false">
+                <button (click)="showMenu = !showMenu" class="flex items-center space-x-2 cursor-pointer">
+                    <span class="text-sm text-gray-600">{{ user?.name }}</span>
+                    <fa-icon [icon]="['fas', 'caret-down']" class="text-xs text-gray-500"></fa-icon>
                 </button>
+                <div *ngIf="showMenu"
+                    class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg border border-gray-200 focus:outline-none text-sm"
+                    role="menu">
+
+                    <!-- Header -->
+                    <div class="px-4 py-2 text-gray-500 text-xs border-b border-gray-100">
+                        Sesión iniciada como<br>
+                        <span class="font-medium text-gray-800 text-sm">{{ user?.email }}</span>
+                    </div>
+
+                    <!-- Items -->
+                    <div class="py-1">
+                        <a routerLink="/profile" (click)="showMenu = !showMenu"
+                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition"
+                            role="menuitem">Perfil</a>
+
+                        <button (click)="logout()"
+                            class="cursor-pointer block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 hover:text-red-800 transition"
+                            role="menuitem">Cerrar sesión</button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -43,6 +58,11 @@
         <main class="p-6 overflow-auto">
             <router-outlet></router-outlet>
             <app-generic-error-popup></app-generic-error-popup>
+            <app-generic-success-popup></app-generic-success-popup>
+            <app-confirm-popup *ngIf="confirmLogout" [title]="'Cerrar sesión'"
+                [message]="'¿Seguro de que deseas cerrar sesión?'" [confirmLabel]="'Cerrar sesión'"
+                [cancelLabel]="'Cancelar'" (confirm)="confirmLogoutAction()" (cancel)="confirmLogout = false">
+            </app-confirm-popup>
         </main>
     </div>
 </div>
