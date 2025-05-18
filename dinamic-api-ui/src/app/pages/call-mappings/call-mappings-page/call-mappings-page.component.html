@@ -50,7 +50,7 @@
                     <td class="p-4">{{ mapping.updated_at | date: 'short' }}</td>
                     <td class="p-4" *ngIf="admin">{{ mapping.user?.name }}</td>
                     <td class="p-4 text-right">
-                        <button
+                        <button *ngIf="mapping.fields?.length > 0 && mapping.source_db?.status === 'success'"
                             class="text-gray-600 hover:text-gray-800 border-2 py-1 px-2 rounded-xl border-green-600 mr-2 cursor-pointer"
                             (click)="launchMapping(mapping)">
                             <span class="text-green-800">Lanzar</span>

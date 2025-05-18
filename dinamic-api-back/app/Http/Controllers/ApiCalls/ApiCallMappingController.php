@@ -14,9 +14,9 @@ class ApiCallMappingController extends Controller
     public function getMappings()
     {
         if (Auth::user()->hasRole('admin')) {
-            return response()->json(ApiCallMapping::with(['user', 'sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb'])->get());
+            return response()->json(ApiCallMapping::with(['user', 'sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb', 'fields'])->get());
         }
-        return response()->json(Auth::user()->apiCallMappings()->with(['sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb'])->get());
+        return response()->json(Auth::user()->apiCallMappings()->with(['sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb', 'fields'])->get());
     }
 
     public function getSingle($id)

@@ -10,7 +10,7 @@ export interface ApiCall {
   method: string;
   request_type?: string;
   response_type?: string;
-  payload_example?: Array<any>;
+  payload_example?: any;
   response_example?: Array<any>;
   description?: string;
   version?: PlatformVersion;

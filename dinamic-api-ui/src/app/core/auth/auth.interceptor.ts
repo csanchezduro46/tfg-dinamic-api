@@ -13,6 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
     '/oauth/login',
     '/oauth/signup',
     '/oauth/password/forgot',
+    '/oauth/password/reset',
     '/oauth/email/verify',
     '/oauth/email/verification-resend'
   ];

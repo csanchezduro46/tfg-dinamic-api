@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ApiCall } from '../../../core/models/api-call.model';
 import { ApiCallMappingService } from '../../../shared/services/api/api-call-mapping.service';
+import { ApiCallService } from '../../../shared/services/api/api-call.service';
 import { DatabaseConnectionService } from '../../../shared/services/api/database-connection.service';
 import { ExecutionService } from '../../../shared/services/api/execution.service';
 import { PlatformConnectionService } from '../../../shared/services/api/platform-connection.service';
@@ -20,6 +22,7 @@ export class CallMappingCreatePageComponent implements OnInit {
   form!: FormGroup;
 
   platformConnections: any[] = [];
+  apiConnections: any[] = [];
   dbConnections: any[] = [];
   admin: boolean = false;
   tablesDbConnection: any[] = [];
@@ -30,6 +33,7 @@ export class CallMappingCreatePageComponent implements OnInit {
     private readonly platformService: PlatformConnectionService,
     private readonly dbService: DatabaseConnectionService,
     private readonly mappingService: ApiCallMappingService,
+    private readonly apiCallService: ApiCallService,
     private readonly auth: AuthService,
     private readonly globalSuccessService: GlobalSuccessService,
     private readonly router: Router,
@@ -47,6 +51,7 @@ export class CallMappingCreatePageComponent implements OnInit {
       source_platform_connection_id: [null],
       source_db_connection_id: [null],
       source_table: [''],
+      api_version: [null],
       target_api_call_id: [null],
       target_db_connection_id: [null],
       target_table: [''],
@@ -62,6 +67,14 @@ export class CallMappingCreatePageComponent implements OnInit {
     }
     this.form?.valueChanges.subscribe((value) => {
       const dbFrom = this.form.get('direction')?.value === 'to_api' ? 'source_db_connection_id' : 'target_db_connection_id';
+      const apiVersionId = this.form.get('api_version')?.value;
+      if (apiVersionId) {
+        this.apiCallService.getByVersion(apiVersionId).subscribe({
+          next: (data) => {
+            this.apiConnections = data
+          }
+        })
+      }
       const dbConnectionId = this.form.get(dbFrom)?.value;
       if (dbConnectionId) {
         this.dbService.getTables(dbConnectionId).subscribe(data => this.tablesDbConnection = data.tables);
@@ -72,6 +85,10 @@ export class CallMappingCreatePageComponent implements OnInit {
       this.mappingId = +id;
       this.getMappingEdit();
     }
+  }
+
+  getApiCalls() {
+
   }
 
   getMappingEdit() {
@@ -97,8 +114,8 @@ export class CallMappingCreatePageComponent implements OnInit {
     if (this.form.invalid) return;
 
     const payload = this.form.value;
-    if(this.mappingId) {
-      this.mappingService.update(this.mappingId,payload).subscribe(() => {
+    if (this.mappingId) {
+      this.mappingService.update(this.mappingId, payload).subscribe(() => {
         this.globalSuccessService.show('El mapeo entre conexiones se ha editado correctamente.', 'Sincronización correcta');
         this.router.navigate(['/connections/mappings']);
       });

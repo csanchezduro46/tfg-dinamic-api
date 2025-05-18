@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
-import { verifiedGuard } from './core/guards/verified.guard';
 import { LayoutComponent } from './shared/layout/layout.component';
 
 
@@ -33,12 +32,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/oauth/profile/profile.component').then(m => m.ProfileComponent),
         title: 'Perfil'
       },
-      {
-        path: 'dashboard',
-        loadComponent: () => import('./pages/dashboard/dashboard-page/dashboard-page.component').then(m => m.DashboardPageComponent),
-        title: 'Dashboard'
-      },
-      // 🧩 Plataformas
+      // Plataformas
       {
         path: 'external-integrations',
         children: [
@@ -92,7 +86,7 @@ export const routes: Routes = [
         ]
       },
 
-      // 🧩 BBDD
+      // BBDD
       {
         path: 'databases',
         title: 'Mis BBDD',
@@ -111,7 +105,7 @@ export const routes: Routes = [
         ]
       },
 
-      // 🧩 Conexiones
+      // Conexiones
       {
         path: 'connections',
         title: 'Conexiones',
@@ -148,7 +142,7 @@ export const routes: Routes = [
         ]
       },
 
-      // 🧩 Ejecuciones
+      // Ejecuciones
       {
         path: 'executions',
         title: 'Ejecuciones',
@@ -172,7 +166,7 @@ export const routes: Routes = [
           }
         ]
       },
-      { path: '**', redirectTo: 'dashboard' }
+      { path: '**', redirectTo: 'platforms/list' }
     ]
   },
 

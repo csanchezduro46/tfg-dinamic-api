@@ -14,6 +14,7 @@ Route::post('/password/reset', [PasswordController::class, 'reset']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/me', [AuthController::class, 'getAccount']);
+    Route::put('/update', [AuthController::class, 'update']);
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 

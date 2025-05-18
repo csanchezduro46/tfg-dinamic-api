@@ -53,7 +53,7 @@ export class LoginComponent {
         this.auth.setUser(res.user)
         localStorage.setItem('token', res.token);
         localStorage.setItem('auth_user', JSON.stringify(res.user));
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/platforms/list']);
       },
       error: () => {
         this.loading = false;

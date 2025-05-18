@@ -31,7 +31,7 @@ export class ForgotPasswordDialogComponent {
         this.success = 'Se ha enviado el email de recuperación.';
         this.error = '';
         this.loading = false;
-        this.globalSuccessService.show('Se ha enviado el email de verificación.');
+        this.globalSuccessService.show('Se ha enviado el email de verificación.', 'Operación realizada correctamente');
         this.close();
       },
       error: () => {

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../../core/models/user.model';
@@ -6,7 +7,7 @@ import { AuthService } from '../../../shared/services/oauth/auth.service';
 
 @Component({
   selector: 'app-database-form',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule],
   standalone: true,
   templateUrl: './database-form.component.html',
   styleUrl: './database-form.component.css'
