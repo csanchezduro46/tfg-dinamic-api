@@ -9,20 +9,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class ApiCallController extends Controller
 {
+    /**
+     * @Endpoint(description: 'Devuelve todas las llamadas API registradas con su grupo y versión')
+     */
     public function getAll()
     {
         return response()->json(ApiCall::with('group', 'version.platform')->get());
-
     }
 
+    /**
+     * @Endpoint(description: 'Devuelve una llamada API concreta por ID')
+     */
     public function get($id)
     {
         return response()->json(ApiCall::with('group', 'version.platform')->findOrFail($id));
     }
 
+    /**
+     * @Endpoint(description: 'Devuelve todas las llamadas API de una versión de plataforma específica')
+     */
     public function getByPlatformVersion($versionId)
     {
         $platformVersion = PlatformVersion::findOrFail($versionId);
@@ -30,6 +40,27 @@ class ApiCallController extends Controller
         return response()->json(ApiCall::where('platform_version_id', $platformVersion->id)->with('group')->get());
     }
 
+    /**
+     * @Endpoint(description: 'Crea una nueva llamada API asociada a una plataforma')
+     * @RequestBody(
+     *     content: {
+     *         "application/json": {
+     *             "example": {
+     *                 "platform_version_id": 1,
+     *                 "name": "createCustomer",
+     *                 "group_id": 2,
+     *                 "endpoint": "/admin/api/graphql.json",
+     *                 "method": "POST",
+     *                 "request_type": "graphql",
+     *                 "response_type": "json",
+     *                 "payload_example": { "query": "...", "variables": { "input": {...} } },
+     *                 "response_example": { "data": {...} },
+     *                 "description": "Crea un nuevo cliente en Shopify"
+     *             }
+     *         }
+     *     }
+     * )
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -69,6 +100,9 @@ class ApiCallController extends Controller
         ], 201);
     }
 
+    /**
+     * @Endpoint(description: 'Actualiza los datos de una llamada API existente')
+     */
     public function update(Request $request, $id)
     {
         $apiCall = ApiCall::findOrFail($id);
@@ -103,6 +137,9 @@ class ApiCallController extends Controller
         ]);
     }
 
+    /**
+     * @Endpoint(description: 'Elimina una llamada API por ID')
+     */
     public function delete($id)
     {
         $apiCall = ApiCall::findOrFail($id);
@@ -113,6 +150,9 @@ class ApiCallController extends Controller
         ]);
     }
 
+    /**
+     * @Endpoint(description: 'Devuelve los campos disponibles de una llamada API según su payload')
+     */
     public function getFields($id)
     {
         $call = ApiCall::findOrFail($id);

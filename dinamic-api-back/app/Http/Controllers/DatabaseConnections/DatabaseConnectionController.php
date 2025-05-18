@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class DatabaseConnectionController extends Controller
 {
@@ -19,16 +21,25 @@ class DatabaseConnectionController extends Controller
         $this->service = $databaseService;
     }
 
+    /**
+     * @Endpoint(description: "Devuelve todas las conexiones de base de datos registradas en el sistema (admin)")
+     */
     public function getAll()
     {
         return response()->json(DatabaseConnection::with('user')->get());
     }
 
+    /**
+     * @Endpoint(description: "Devuelve todas las conexiones asociadas al usuario actual")
+     */
     public function getConnectionsUser()
     {
         return response()->json(Auth::user()->databaseConnections);
     }
 
+    /**
+     * @Endpoint(description: "Devuelve una conexión concreta por ID si pertenece al usuario actual o es admin")
+     */
     public function getConnectionBd($id)
     {
         $connection = DatabaseConnection::findOrFail($id);
@@ -38,32 +49,64 @@ class DatabaseConnectionController extends Controller
         return response()->json($connection);
     }
 
+    /**
+     * @Endpoint(description: "Crea una nueva conexión a base de datos")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "name": "Conexión PostgreSQL",
+     *         "driver": "pgsql",
+     *         "host": "localhost",
+     *         "port": 5432,
+     *         "database": "mi_base_datos",
+     *         "username": "usuario_db",
+     *         "password": "secreto123"
+     *     }
+     * )
+     */
     public function store(Request $request)
     {
-        $rules = [
-            'name' => 'required|string|max:100',
-            'driver' => 'required|in:mysql,pgsql,sqlsrv',
-            'host' => 'required|string',
-            'port' => 'required|integer',
-            'database' => 'required|string',
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ];
-
         if (Auth::user()->hasRole('admin')) {
-            $rules['user_id'] = 'required|integer|exists:users,id';
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|integer|exists:users,id',
+                'name' => 'required|string|max:100',
+                'driver' => 'required|in:mysql,pgsql,sqlsrv',
+                'host' => 'required|string',
+                'port' => 'required|integer',
+                'database' => 'required|string',
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ], [
+                'user_id.required' => 'Es obligatorio introducir el usuario al que irá asociada la conexión.',
+                'name.required' => 'El nombre es obligatorio.',
+                'driver.required' => 'Es obligatorio indicar el tipo de bbdd: mysql, pgsql o sqlsrv.',
+                'host.required' => 'El host es obligatorio.',
+                'port.required' => 'El puerto es obligatorio.',
+                'database.required' => 'El nombre de la base de datos es obligatorio.',
+                'username.required' => 'El usuario es obligatorio.',
+                'password.required' => 'La contraseña es obligatoria.',
+                'port.integer' => 'El puerto no es válido, debe ser de tipo numérico.'
+            ]);
+        } else {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:100',
+                'driver' => 'required|in:mysql,pgsql,sqlsrv',
+                'host' => 'required|string',
+                'port' => 'required|integer',
+                'database' => 'required|string',
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ], [
+                'name.required' => 'El nombre es obligatorio.',
+                'driver.required' => 'Es obligatorio indicar el tipo de bbdd: mysql, pgsql o sqlsrv.',
+                'host.required' => 'El host es obligatorio.',
+                'port.required' => 'El puerto es obligatorio.',
+                'database.required' => 'El nombre de la base de datos es obligatorio.',
+                'username.required' => 'El usuario es obligatorio.',
+                'password.required' => 'La contraseña es obligatoria.',
+                'port.integer' => 'El puerto no es válido, debe ser de tipo numérico.'
+            ]);
         }
-        $validator = Validator::make($request->all(), $rules, [
-            'user_id.required' => 'Es obligatorio introducir el usuario al que irá asociada la conexión.',
-            'name.required' => 'El nombre es obligatorio.',
-            'driver.required' => 'Es obligatorio indicar el tipo de bbdd: mysql, pgsql o sqlsrv.',
-            'host.required' => 'El host es obligatorio.',
-            'port.required' => 'El puerto es obligatorio.',
-            'database.required' => 'El nombre de la base de datos es obligatorio.',
-            'username.required' => 'El usuario es obligatorio.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'port.integer' => 'El puerto no es válido, debe ser de tipo numérico.'
-        ]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -90,6 +133,17 @@ class DatabaseConnectionController extends Controller
         ], 201);
     }
 
+    /**
+     * @Endpoint(description: "Actualiza los datos de una conexión existente")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "name": "Conexión actualizada",
+     *         "host": "127.0.0.1",
+     *         "username": "nuevo_usuario"
+     *     }
+     * )
+     */
     public function update(Request $request, $id)
     {
         $connection = DatabaseConnection::where('id', $id)->firstOrFail();
@@ -134,6 +188,9 @@ class DatabaseConnectionController extends Controller
         ], 201);
     }
 
+    /**
+     * @Endpoint(description: "Elimina una conexión de base de datos")
+     */
     public function delete($id)
     {
         $connection = DatabaseConnection::where('id', $id)->firstOrFail();
@@ -146,6 +203,9 @@ class DatabaseConnectionController extends Controller
         return response()->json(['msg' => 'Conexión eliminada']);
     }
 
+    /**
+     * @Endpoint(description: "Lanza un test de conexión a la base de datos seleccionada")
+     */
     public function testConnection($id)
     {
         $connection = DatabaseConnection::where('id', $id)->firstOrFail();

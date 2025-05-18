@@ -7,16 +7,28 @@ use App\Models\ApiCallGroup;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class ApiGroupController extends Controller
 {
-    // Obtener todos los grupos (cualquier usuario logueado)
+    /**
+     * @Endpoint(description: "Obtiene todos los grupos de llamadas API disponibles.")
+     */
     public function getAll(): JsonResponse
     {
         return response()->json(ApiCallGroup::all());
     }
 
-    // Crear un grupo (admin)
+    /**
+     * @Endpoint(description: "Crea un nuevo grupo de llamadas API (solo administradores).")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "name": "Clientes"
+     *     }
+     * )
+     */
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -42,7 +54,15 @@ class ApiGroupController extends Controller
         ], 201);
     }
 
-    // Actualizar un grupo (admin)
+    /**
+     * @Endpoint(description: "Actualiza el nombre de un grupo de llamadas API (solo administradores).")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "name": "Clientes Premium"
+     *     }
+     * )
+     */
     public function update(Request $request, $id): JsonResponse
     {
         $group = ApiCallGroup::findOrFail($id);
@@ -70,7 +90,9 @@ class ApiGroupController extends Controller
         ]);
     }
 
-    // Eliminar un grupo (admin)
+    /**
+     * @Endpoint(description: "Elimina un grupo de llamadas API existente (solo administradores).")
+     */
     public function delete($id): JsonResponse
     {
         $group = ApiCallGroup::findOrFail($id);

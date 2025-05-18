@@ -9,9 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class ApiCallMappingFieldController extends Controller
 {
+    /**
+     * @Endpoint(description: "Devuelve todos los campos mapeados de un mapeo de conexión")
+     */
     public function getFieldsByMapping($mappingId)
     {
         $mapping = ApiCallMapping::findOrFail($mappingId);
@@ -23,6 +28,16 @@ class ApiCallMappingFieldController extends Controller
         return response()->json($mapping->fields);
     }
 
+    /**
+     * @Endpoint(description: "Crea un nuevo campo mapeado dentro de un mapeo existente")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "source_field": "email",
+     *         "target_field": "customer.email"
+     *     }
+     * )
+     */
     public function store(Request $request, $mappingId)
     {
         $mapping = ApiCallMapping::findOrFail($mappingId);
@@ -31,7 +46,7 @@ class ApiCallMappingFieldController extends Controller
             abort(403, 'Forbidden');
         }
 
-        $rules = [
+        $validator = Validator::make($request->all(), [
             'source_field' => [
                 'required',
                 'string',
@@ -42,9 +57,7 @@ class ApiCallMappingFieldController extends Controller
                 }),
             ],
             'target_field' => 'required|string|max:100',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, [
+        ], [
             'source_field.unique' => 'Ya existe un mapeo con estos campos para esta relación.',
             'source_field.required' => 'El campo de origen es obligatorio.',
             'target_field.required' => 'El campo de destino es obligatorio.',
@@ -65,6 +78,16 @@ class ApiCallMappingFieldController extends Controller
         ], 201);
     }
 
+    /**
+     * @Endpoint(description: "Actualiza un campo mapeado dentro de un mapeo")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "source_field": "nombre",
+     *         "target_field": "customer.firstName"
+     *     }
+     * )
+     */
     public function update(Request $request, $mappingId, $fieldId)
     {
         $mapping = ApiCallMapping::findOrFail($mappingId);
@@ -94,6 +117,9 @@ class ApiCallMappingFieldController extends Controller
         ]);
     }
 
+    /**
+     * @Endpoint(description: "Elimina un campo mapeado de un mapeo")
+     */
     public function delete($mappingId, $fieldId)
     {
         $mapping = ApiCallMapping::findOrFail($mappingId);

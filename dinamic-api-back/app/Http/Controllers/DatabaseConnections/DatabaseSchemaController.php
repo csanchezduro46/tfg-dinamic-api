@@ -7,6 +7,7 @@ use App\Models\DatabaseConnection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ConnectionsDirect\DatabaseService;
+use Dedoc\Scramble\Attributes\Endpoint;
 
 class DatabaseSchemaController extends Controller
 {
@@ -17,6 +18,9 @@ class DatabaseSchemaController extends Controller
         $this->dbService = $dbService;
     }
 
+    /**
+     * @Endpoint(description: "Obtiene el esquema completo de una base de datos (todas las tablas y sus columnas)")
+     */
     public function getFullSchema($id)
     {
         $connection = DatabaseConnection::where('id', $id)->firstOrFail();
@@ -37,7 +41,9 @@ class DatabaseSchemaController extends Controller
         ]);
     }
 
-
+    /**
+     * @Endpoint(description: "Devuelve el listado de tablas de una conexión de base de datos")
+     */
     public function getTables($id)
     {
         $connection = DatabaseConnection::where('id', $id)->firstOrFail();
@@ -50,6 +56,9 @@ class DatabaseSchemaController extends Controller
         ]);
     }
 
+    /**
+     * @Endpoint(description: "Devuelve las columnas de una tabla concreta de la base de datos")
+     */
     public function getColumns($id, $table)
     {
         $connection = DatabaseConnection::where('id', $id)->firstOrFail();

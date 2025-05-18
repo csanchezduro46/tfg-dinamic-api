@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class ExecutionController extends Controller
 {
@@ -21,6 +23,9 @@ class ExecutionController extends Controller
         $this->executionService = $executionService;
     }
 
+    /**
+     * @Endpoint(description: "Devuelve la lista de ejecuciones (manuales o programadas) visibles para el usuario actual")
+     */
     public function list()
     {
         $type = request('type'); // puede ser 'manual', 'scheduled' o null
@@ -39,7 +44,9 @@ class ExecutionController extends Controller
         return response()->json($query->orderByDesc('created_at')->get());
     }
 
-
+    /**
+     * @Endpoint(description: "Devuelve todas las ejecuciones asociadas a un mapeo concreto")
+     */
     public function listByMapping($id)
     {
         $mapping = ApiCallMapping::findOrFail($id);
@@ -51,6 +58,18 @@ class ExecutionController extends Controller
         return response()->json($executions);
     }
 
+    /**
+     * @Endpoint(description: "Crea una nueva ejecución (manual o programada)")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "execution_type": "manual",
+     *         "started_at": "2025-05-21T10:00:00Z",
+     *         "repeat": "none",
+     *         "cron_expression": null
+     *     }
+     * )
+     */
     public function store($mappingId, Request $request)
     {
         $mapping = ApiCallMapping::findOrFail($mappingId);
@@ -130,6 +149,9 @@ class ExecutionController extends Controller
         ], $code);
     }
 
+    /**
+     * @Endpoint(description: "Ejecuta manualmente una ejecución previamente registrada")
+     */
     public function execute($id)
     {
         $execution = Execution::findOrFail($id);
@@ -169,6 +191,17 @@ class ExecutionController extends Controller
         ], $code);
     }
 
+    /**
+     * @Endpoint(description: "Actualiza una ejecución programada (fecha de inicio, repetición, cron)")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "started_at": "2025-05-22T08:00:00Z",
+     *         "repeat": "custom",
+     *         "cron_expression": "0 2 * * *"
+     *     }
+     * )
+     */
     public function update(Request $request, $id)
     {
         $execution = Execution::findOrFail($id);
@@ -202,6 +235,9 @@ class ExecutionController extends Controller
         ]);
     }
 
+    /**
+     * @Endpoint(description: "Elimina una ejecución (manual o programada)")
+     */
     public function delete($id)
     {
         $execution = Execution::findOrFail($id);
@@ -215,6 +251,9 @@ class ExecutionController extends Controller
         return response()->json(['msg' => 'Ejecución eliminada correctamente.']);
     }
 
+    /**
+     * @Endpoint(description: "Lanza el comando Laravel para ejecutar sincronizaciones programadas (solo admin)")
+     */
     public function runScheduledCommand()
     {
         if (!auth()->user()?->hasRole('admin')) {

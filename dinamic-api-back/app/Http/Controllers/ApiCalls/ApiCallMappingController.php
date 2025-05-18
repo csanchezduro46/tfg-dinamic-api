@@ -8,9 +8,14 @@ use App\Models\ApiCallMappingField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class ApiCallMappingController extends Controller
 {
+    /**
+     * @Endpoint(description: 'Devuelve todos los mapeos disponibles para el usuario actual o todos si es admin')
+     */
     public function getMappings()
     {
         if (Auth::user()->hasRole('admin')) {
@@ -19,6 +24,9 @@ class ApiCallMappingController extends Controller
         return response()->json(Auth::user()->apiCallMappings()->with(['sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb', 'fields'])->get());
     }
 
+    /**
+     * @Endpoint(description: 'Devuelve un mapeo por ID incluyendo campos y relaciones')
+     */
     public function getSingle($id)
     {
         $mapping = ApiCallMapping::with('fields')->findOrFail($id);
@@ -30,31 +38,62 @@ class ApiCallMappingController extends Controller
         return response()->json($mapping->load('fields', 'sourceApiCall', 'targetApiCall'));
     }
 
+    /**
+     * @Endpoint(description: 'Crea un nuevo mapeo de conexión entre origen y destino')
+     * @RequestBody(
+     *     content="application/json",
+     *     example={
+     *         "name": "Mapeo clientes",
+     *         "direction": "to_api",
+     *         "source_db_connection_id": 1,
+     *         "source_table": "clientes",
+     *         "target_api_call_id": 1,
+     *         "fields": {
+     *             {"source_field": "email", "target_field": "customer.email"}
+     *         }
+     *     }
+     * )
+     */
     public function store(Request $request)
     {
-        $rules = [
-            'name' => 'required|string|max:100',
-            'direction' => 'required|in:to_api,from_api,both',
-            'description' => 'nullable|string',
-            'source_api_call_id' => 'nullable|exists:api_calls,id',
-            'source_db_connection_id' => 'nullable|exists:database_connections,id',
-            'source_table' => 'nullable|string|max:100',
-            'target_api_call_id' => 'nullable|exists:api_calls,id',
-            'target_db_connection_id' => 'nullable|exists:database_connections,id',
-            'target_table' => 'nullable|string|max:100',
-            'fields' => 'nullable|array'
-        ];
-
         if (Auth::user()->hasRole('admin')) {
-            $rules['user_id'] = 'required|integer|exists:users,id';
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|integer|exists:users,id',
+                'name' => 'required|string|max:100',
+                'direction' => 'required|in:to_api,from_api,both',
+                'description' => 'nullable|string',
+                'source_api_call_id' => 'nullable|exists:api_calls,id',
+                'source_db_connection_id' => 'nullable|exists:database_connections,id',
+                'source_table' => 'nullable|string|max:100',
+                'target_api_call_id' => 'nullable|exists:api_calls,id',
+                'target_db_connection_id' => 'nullable|exists:database_connections,id',
+                'target_table' => 'nullable|string|max:100',
+                'fields' => 'nullable|array'
+            ], [
+                'name.required' => 'El nombre del mapeo es obligatorio.',
+                'direction.required' => 'La dirección del mapeo es obligatoria.',
+                'user_id.required' => 'El usuario es obligatorio para un mapeo creado por un administrador.',
+                'user_id.exists' => 'El usuario debe existir'
+            ]);
+        } else {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:100',
+                'direction' => 'required|in:to_api,from_api,both',
+                'description' => 'nullable|string',
+                'source_api_call_id' => 'nullable|exists:api_calls,id',
+                'source_db_connection_id' => 'nullable|exists:database_connections,id',
+                'source_table' => 'nullable|string|max:100',
+                'target_api_call_id' => 'nullable|exists:api_calls,id',
+                'target_db_connection_id' => 'nullable|exists:database_connections,id',
+                'target_table' => 'nullable|string|max:100',
+                'fields' => 'nullable|array'
+            ], [
+                'name.required' => 'El nombre del mapeo es obligatorio.',
+                'direction.required' => 'La dirección del mapeo es obligatoria.',
+                'user_id.required' => 'El usuario es obligatorio para un mapeo creado por un administrador.',
+                'user_id.exists' => 'El usuario debe existir'
+            ]);
         }
-
-        $validator = Validator::make($request->all(), $rules, [
-            'name.required' => 'El nombre del mapeo es obligatorio.',
-            'direction.required' => 'La dirección del mapeo es obligatoria.',
-            'user_id.required' => 'El usuario es obligatorio para un mapeo creado por un administrador.',
-            'user_id.exists' => 'El usuario debe existir'
-        ]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -87,7 +126,7 @@ class ApiCallMappingController extends Controller
         }
 
         foreach ($request->fields as $field) {
-            if(!isset($field['source_field']) || !isset($field['target_field'])) {
+            if (!isset($field['source_field']) || !isset($field['target_field'])) {
                 $errors['fields'] = 'Debes indicar los campos de origen y destino (source_field y target_field) de los campos que quieres relacionar';
             }
         }
@@ -119,6 +158,9 @@ class ApiCallMappingController extends Controller
         ], 201);
     }
 
+    /**
+     * @Endpoint(description: 'Actualiza un mapeo existente y sus campos')
+     */
     public function update(Request $request, $id)
     {
         $mapping = ApiCallMapping::with('fields')->findOrFail($id);
@@ -167,6 +209,9 @@ class ApiCallMappingController extends Controller
         ]);
     }
 
+    /**
+     * @Endpoint(description: 'Elimina un mapeo de conexiones y sus relaciones')
+     */
     public function delete($id)
     {
         $mapping = ApiCallMapping::findOrFail($id);
@@ -179,6 +224,9 @@ class ApiCallMappingController extends Controller
         return response()->json(['msg' => 'Mapeo eliminado correctamente.']);
     }
 
+    /**
+     * @Endpoint(description: 'Permite probar la ejecución de un mapeo concreto')
+     */
     public function testMapping($id)
     {
         $mapping = ApiCallMapping::findOrFail($id);

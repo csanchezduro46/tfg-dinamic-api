@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Platforms;
 
-use App\Models\Platform;
 use App\Models\PlatformConnection;
-use App\Models\PlatformNecessaryKey;
 use App\Services\Platforms\PlatformServiceFactory;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class PlatformConnectionCredentialsController extends Controller
 {
-    // Claves de una conexion externa
+    /**
+     * @Endpoint(description: "Devuelve las claves necesarias de una conexión externa por ID")
+     */
     public function getByConnection($connectionId)
     {
         $connection = PlatformConnection::findOrFail($connectionId);
@@ -25,7 +26,15 @@ class PlatformConnectionCredentialsController extends Controller
         ]);
     }
 
-    // Crear claves de una conexion externa
+    /**
+     * @Endpoint(description: "Guarda y valida las claves necesarias para una conexión externa")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "credential": "shpat_xxxxxxxx"
+     *     }
+     * )
+     */
     public function storeKeys(Request $request, $id)
     {
         $connection = PlatformConnection::findOrFail($id);
@@ -68,7 +77,9 @@ class PlatformConnectionCredentialsController extends Controller
     }
 
 
-    // Eliminar claves de una conexion externa
+    /**
+     * @Endpoint(description: "Elimina todas las claves asociadas a una conexión externa")
+     */
     public function deleteAllKey($connectionId)
     {
         $connection = PlatformConnection::findOrFail($connectionId);
@@ -78,6 +89,10 @@ class PlatformConnectionCredentialsController extends Controller
             'msg' => 'Claves eliminadas correctamente.'
         ]);
     }
+
+    /**
+     * @Endpoint(description: "Elimina una clave específica de una conexión externa")
+     */
     public function deleteKey($connectionId, $keyId)
     {
         $connection = PlatformConnection::findOrFail($connectionId);
@@ -90,6 +105,9 @@ class PlatformConnectionCredentialsController extends Controller
         ]);
     }
 
+    /**
+     * @Endpoint(description: "Testea la conexión a una plataforma usando las credenciales almacenadas")
+     */
     public function testConnection($id)
     {
         $connection = PlatformConnection::findOrFail($id);

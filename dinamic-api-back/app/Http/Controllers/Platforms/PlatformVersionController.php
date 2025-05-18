@@ -9,10 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class PlatformVersionController extends Controller
 {
-    // Obtener todas las versiones (admin)
+    /**
+     * @Endpoint(description: "Obtiene todas las versiones de plataforma (opcionalmente filtradas por versión o plataforma_id). Solo accesible por administradores.")
+     */
     public function getAll(Request $request): JsonResponse
     {
         $query = PlatformVersion::with('platform');
@@ -28,7 +32,9 @@ class PlatformVersionController extends Controller
         return response()->json($query->get());
     }
 
-    // Obtener todas las versiones de una plataforma (cualquier usuario logueado)
+    /**
+     * @Endpoint(description: "Obtiene todas las versiones disponibles para una plataforma concreta.")
+     */
     public function getByPlatform($id): JsonResponse
     {
         $platform = Platform::findOrFail($id);
@@ -37,7 +43,16 @@ class PlatformVersionController extends Controller
         return response()->json($versions);
     }
 
-    // Crear una version para una plataforma (admin)
+    /**
+     * @Endpoint(description: "Crea una nueva versión para una plataforma específica (solo administradores).")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "version": "2024-10",
+     *         "description": "Versión octubre 2024 de Shopify"
+     *     }
+     * )
+     */
     public function store(Request $request, $id): JsonResponse
     {
         $platform = Platform::findOrFail($id);
@@ -68,7 +83,16 @@ class PlatformVersionController extends Controller
         ], 201);
     }
 
-    // Actualizar una version para una plataforma (admin)
+    /**
+     * @Endpoint(description: "Actualiza una versión existente (nombre de versión o descripción).")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "version": "2024-11",
+     *         "description": "Actualización de seguridad"
+     *     }
+     * )
+     */
     public function update(Request $request, $id): JsonResponse
     {
         $version = PlatformVersion::findOrFail($id);
@@ -106,7 +130,9 @@ class PlatformVersionController extends Controller
         ]);
     }
 
-    // Eliminar una version (admin)
+    /**
+     * @Endpoint(description: "Elimina una versión de plataforma existente (solo administradores).")
+     */
     public function delete($id): JsonResponse
     {
         $version = PlatformVersion::findOrFail($id);

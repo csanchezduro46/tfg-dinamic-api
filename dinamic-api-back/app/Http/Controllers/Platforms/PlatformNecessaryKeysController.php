@@ -7,10 +7,14 @@ use App\Models\PlatformNecessaryKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\RequestBody;
 
 class PlatformNecessaryKeysController extends Controller
 {
-    // Claves necesarias de una plataforma
+    /**
+     * @Endpoint(description: "Devuelve las claves necesarias de una plataforma (access_token, api_key, etc.)")
+     */
     public function getKeysPlatform($platformId)
     {
         $platform = Platform::findOrFail($platformId);
@@ -21,7 +25,17 @@ class PlatformNecessaryKeysController extends Controller
         ]);
     }
 
-    // Crear una clave para una plataforma
+    /**
+     * @Endpoint(description: "Crea una nueva clave necesaria para una plataforma (solo administradores).")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "key": "access_token",
+     *         "label": "Access Token",
+     *         "required": true
+     *     }
+     * )
+     */
     public function store(Request $request, $platformId)
     {
         $platform = Platform::findOrFail($platformId);
@@ -56,7 +70,16 @@ class PlatformNecessaryKeysController extends Controller
         ], 201);
     }
 
-    // Actualizar clave necesaria de una paltaforma
+    /**
+     * @Endpoint(description: "Actualiza una clave necesaria de una plataforma.")
+     * @RequestBody(
+     *     content: "application/json",
+     *     example: {
+     *         "label": "Token de acceso",
+     *         "required": false
+     *     }
+     * )
+     */
     public function update(Request $request, $platformId, $keyId)
     {
         $platform = Platform::findOrFail($platformId);
@@ -87,7 +110,9 @@ class PlatformNecessaryKeysController extends Controller
         ]);
     }
 
-    // Eliminar una clave necesaria de una plataforma
+    /**
+     * @Endpoint(description: "Elimina una clave necesaria de una plataforma.")
+     */
     public function delete($platformId, $keyId)
     {
         $platform = Platform::findOrFail($platformId);
