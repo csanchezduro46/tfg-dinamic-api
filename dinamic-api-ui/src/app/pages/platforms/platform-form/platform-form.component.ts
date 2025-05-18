@@ -32,12 +32,12 @@ export class PlatformFormComponent implements OnInit {
     const data = this.form.value;
 
     if (this.platform?.id) {
-      this.platformService.update(this.platform.id, data).subscribe(() => {
-        this.submit.emit();
+      this.platformService.update(this.platform.id, data).subscribe({
+        next: () => { this.submit.emit(); }
       });
     } else {
-      this.platformService.create(data).subscribe(() => {
-        this.submit.emit();
+      this.platformService.create(data).subscribe({
+        next: () => { this.submit.emit(); }
       });
     }
   }

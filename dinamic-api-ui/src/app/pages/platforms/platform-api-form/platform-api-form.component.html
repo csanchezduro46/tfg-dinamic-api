@@ -92,7 +92,7 @@
             <!-- Textareas -->
             <div>
               <label class="block text-sm font-medium text-gray-700">Payload de petición*</label>
-              <textarea formControlName="payload_example" rows="6"
+              <textarea formControlName="payload_example" rows="6" [placeholder]="payload_example|json"
                 class="mt-1 w-full border border-gray-300 rounded px-3 py-2 font-mono"></textarea>
             </div>
 

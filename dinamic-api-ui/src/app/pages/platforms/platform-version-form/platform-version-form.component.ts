@@ -35,13 +35,13 @@ export class PlatformVersionFormComponent implements OnInit {
     const data = this.form.value;
 
     if (this.version?.id) {
-      this.versionService.update(this.version.id, data).subscribe(() => {
-        this.submit.emit();
-      });
+      this.versionService.update(this.version.id, data).subscribe({
+        next: () => {this.submit.emit();}
+      })
     } else {
-      this.versionService.create(data).subscribe(() => {
-        this.submit.emit();
-      });
+      this.versionService.create(data).subscribe({
+        next: () => {this.submit.emit();}
+      })
     }
   }
 }
