@@ -28,7 +28,7 @@ class AuthController extends Controller
             ], 400);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->firstOrFail();
         $errorUser = false;
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -94,6 +94,39 @@ class AuthController extends Controller
 
         $res = [
             'msg' => 'Usuario registrado correctamente, por favor, verifica el correo electrónico',
+        ];
+        return response()->json(($res), 201);
+    }
+
+    public function update(Request $request)
+    {
+        $user = auth()->user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|string|between:2,100',
+            'password' => 'sometimes|string|confirmed'
+        ], [
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'msg' => 'Error en la petición',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $user->update(['name' => $request->name]);
+
+        if ($request->password) {
+            $user->update([
+                'password' => bcrypt($request->password)
+            ]);
+        }
+
+        $res = [
+            'msg' => 'Usuario actualizado correctamente, por favor.',
+            'user' => $user
         ];
         return response()->json(($res), 201);
     }

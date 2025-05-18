@@ -1,0 +1,65 @@
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer" *ngIf="admin"
+            (click)="onNew()">
+            + Nueva API
+        </button>
+    </div>
+
+    <!-- Formulario -->
+    <app-platform-api-form *ngIf="showFormPopup" [api]="editing" [platforms]="platforms" [versions]="versions"
+        [groups]="groups" (correct)="onSaved()" (cancel)="editing = null; showFormPopup=false">
+    </app-platform-api-form>
+
+    <div class="bg-white rounded-lg shadow overflow-auto">
+        <table class="w-full text-sm text-gray-700">
+            <thead class="bg-gray-100 border-b text-gray-600 font-semibold text-left">
+                <tr>
+                    <th class="p-4">Nombre</th>
+                    <th class="p-4">Grupo</th>
+                    <th class="p-4">Endpoint</th>
+                    <th class="p-4">Plataforma</th>
+                    <th class="p-4">Versión</th>
+                    <th class="p-4 text-right" *ngIf="admin">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let api of apis" class="border-b hover:bg-gray-50">
+                    <td class="p-4 font-medium">{{ api.name }}</td>
+                    <td class="p-4">{{ api.group?.name }}</td>
+                    <td class="p-4">{{ api.endpoint }}</td>
+                    <td class="p-4">{{ api.version?.platform?.name || '-' }}</td>
+                    <td class="p-4">{{ api.version?.version || '-' }}</td>
+                    <td class="p-4 text-right space-x-2" *ngIf="admin">
+                        <button class="text-blue-600 hover:text-blue-800 cursor-pointer" (click)="onEdit(api)">
+                            <fa-icon [icon]="['fas', 'pen']"></fa-icon>
+                        </button>
+                        <button (click)="askDelete(api.id)" class="text-red-600 hover:text-red-800 cursor-pointer">
+                            <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="loading">
+                    <td colspan="5" class="p-6 text-center">
+                        <div class="flex justify-center items-center gap-2 text-blue-600">
+                            <div
+                                class="animate-spin h-5 w-5 border-4 border-blue-500 border-t-transparent rounded-full">
+                            </div>
+                            <span>Cargando datos...</span>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr *ngIf="!loading && apis.length === 0">
+                    <td colspan="5" class="text-center p-4 text-gray-500">No hay APIs registradas.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Diálogo de confirmación -->
+<app-confirm-popup *ngIf="confirmDeleteId" [title]="'Eliminar llamada'"
+    [message]="'¿Estás seguro de eliminar esta llamada (API)? Se eliminarán todas las conexiones y datos que tenga relacionados.'"
+    (confirm)="confirmDelete()" (cancel)="confirmDeleteId = null">
+</app-confirm-popup>

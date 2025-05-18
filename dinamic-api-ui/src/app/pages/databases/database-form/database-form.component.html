@@ -1,0 +1,82 @@
+<div class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <!-- Fondo opaco -->
+  <div class="fixed inset-0 bg-gray-500/75 transition-opacity z-10" aria-hidden="true"></div>
+
+  <!-- Contenedor central -->
+  <div class="fixed inset-0 z-30 w-screen overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div
+        class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
+
+        <!-- Botón cerrar -->
+        <button (click)="cancel.emit()"
+          class="absolute top-2 right-3 text-gray-400 hover:text-black text-xl font-bold cursor-pointer">
+          &times;
+        </button>
+
+        <!-- Contenido -->
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">{{connection ? 'Guardar' : 'Crear'}}
+            Conexión
+          </h2>
+
+          <!-- Formulario -->
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4 max-w-3xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div *ngIf="admin">
+                <label class="block text-sm font-medium text-gray-700">Propietario*</label>
+                <input formControlName="user_id" class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre*</label>
+                <input formControlName="name" class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Driver*</label>
+                <select formControlName="driver" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+                  <option value="mysql">MySQL</option>
+                  <option value="pgsql">PostgreSQL</option>
+                  <option value="sqlsrv">SQL Server</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Host*</label>
+                <input formControlName="host" class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Puerto*</label>
+                <input type="number" formControlName="port"
+                  class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Base de datos*</label>
+                <input formControlName="database" class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Usuario*</label>
+                <input formControlName="username" class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Contraseña*</label>
+                <input type="password" formControlName="password"
+                  class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-4">
+              <button type="button" (click)="cancel.emit()"
+                class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 cursor-pointer">
+                Cancelar
+              </button>
+              <button type="submit" [disabled]="form.invalid"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer">
+                {{ connection ? 'Guardar' : 'Crear' }} conexión
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

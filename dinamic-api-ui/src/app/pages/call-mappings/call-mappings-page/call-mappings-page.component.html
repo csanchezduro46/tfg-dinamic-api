@@ -1,0 +1,104 @@
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer"
+            routerLink="/connections/mappings/create">
+            + Nueva conexión
+        </button>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-auto">
+        <table class="w-full text-sm text-gray-700">
+            <thead class="bg-gray-100 border-b text-gray-600 font-semibold text-left">
+                <tr>
+                    <th class="p-4">Nombre</th>
+                    <th class="p-4">Dirección</th>
+                    <th class="p-4">Origen</th>
+                    <th class="p-4">Destino</th>
+                    <th class="p-4">Estado BBDD</th>
+                    <th class="p-4">Última modificación</th>
+                    <th class="p-4" *ngIf="admin">Usuario</th>
+                    <th class="p-4"></th>
+                    <th class="p-4 text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let mapping of mappings" class="border-b hover:bg-gray-50 transition">
+                    <td class="p-4 font-medium">{{ mapping.name }}</td>
+                    <td class="p-4 capitalize">
+                        {{ mapping.direction === 'to_api' ? 'A Plataforma' : 'A BBDD' }}
+                    </td>
+                    <td class="p-4">
+                        <span *ngIf="mapping.source_db">{{ mapping.source_db.name }}:</span>
+                        {{ mapping.source_table }}
+                    </td>
+                    <td class="p-4">
+                        <ng-container *ngIf="mapping.target_api_call">
+                            API: {{ mapping.target_api_call.name }}
+                        </ng-container>
+                        <ng-container *ngIf="mapping.target_table">
+                            Tabla: {{ mapping.target_table }}
+                        </ng-container>
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded text-xs font-medium" [ngClass]="{
+                  'bg-green-100 text-green-700': mapping.source_db?.status === 'success',
+                  'bg-red-100 text-red-700': mapping.source_db?.status === 'failed'
+                }">
+                            {{ mapping.source_db?.status || 'desconocido' }}
+                        </span>
+                    </td>
+                    <td class="p-4">{{ mapping.updated_at | date: 'short' }}</td>
+                    <td class="p-4" *ngIf="admin">{{ mapping.user?.name }}</td>
+                    <td class="p-4 text-right">
+                        <button *ngIf="mapping.fields?.length > 0 && mapping.source_db?.status === 'success'"
+                            class="text-gray-600 hover:text-gray-800 border-2 py-1 px-2 rounded-xl border-green-600 mr-2 cursor-pointer"
+                            (click)="launchMapping(mapping)">
+                            <span class="text-green-800">Lanzar</span>
+                        </button>
+                    </td>
+                    <td class="p-4 text-right space-x-2">
+                        <a [routerLink]="['/connections/mappings/fields', mapping.id]"
+                            class="text-esmerald-600 hover:text-blue-800 text-sm cursor-pointer">
+                            Configurar campos
+                        </a>
+                        <button class="text-blue-600 hover:text-blue-800 cursor-pointer"
+                            [routerLink]="['/connections/mappings/edit', mapping.id]">
+                            <fa-icon [icon]="['fas', 'pen']"></fa-icon>
+                        </button>
+                        <button (click)="askDelete(mapping.id)" class="text-red-600 hover:text-red-800 cursor-pointer">
+                            <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="loading">
+                    <td colspan="7" class="p-6 text-center">
+                        <div class="flex justify-center items-center gap-2 text-blue-600">
+                            <div
+                                class="animate-spin h-5 w-5 border-4 border-blue-500 border-t-transparent rounded-full">
+                            </div>
+                            <span>Cargando datos...</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="!loading && mappings.length === 0" class="text-center text-gray-500 mt-6">
+        <p>No hay mapeos configurados aún.</p>
+    </div>
+</div>
+
+<!-- Spinner de pantalla completa -->
+<div *ngIf="loadingMapping" class="fixed inset-0 z-50 flex items-center justify-center bg-white/5 backdrop-blur-md">
+    <div class="flex flex-col items-center gap-4 text-gray-700">
+        <div class="h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm font-medium">Cargando...</p>
+    </div>
+</div>
+
+<!-- Diálogo de confirmación -->
+<app-confirm-popup *ngIf="confirmDeleteId" [title]="'Eliminar conexión'"
+    [message]="'¿Estás seguro de eliminar esta conexión externa?'" (confirm)="confirmDelete()"
+    (cancel)="confirmDeleteId = null">
+</app-confirm-popup>

@@ -6,15 +6,15 @@ use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 // User login
-Route::middleware(['verified'])->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-});
+Route::post('/login', [AuthController::class, 'login']);
+
 // Recuperación de contraseña
 Route::post('/password/forgot', [PasswordController::class, 'sendResetLinkEmail']);
 Route::post('/password/reset', [PasswordController::class, 'reset']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/me', [AuthController::class, 'getAccount']);
+    Route::put('/update', [AuthController::class, 'update']);
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 

@@ -1,0 +1,39 @@
+<div class="p-6 max-w-xl mx-auto space-y-6">
+    <h2 class="text-2xl font-semibold text-gray-800">Mi perfil</h2>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Nombre</label>
+            <input formControlName="name" class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+
+        <h2 class="text-xl font-semibold text-gray-800 mt-16 mb-6">Actualizar contraseña</h2>
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Nueva contraseña</label>
+            <input type="password" formControlName="password" class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Repetir contraseña</label>
+            <input type="password" formControlName="password_confirmation"
+                class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+
+        <div *ngIf="error" class="text-red-600 text-sm">{{ error }}</div>
+
+        <div class="flex justify-end">
+            <button type="submit" [disabled]="form.invalid || loading"
+                class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 cursor-pointer disabled:cursor-default">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Spinner de pantalla completa -->
+<div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/5 backdrop-blur-md">
+    <div class="flex flex-col items-center gap-4 text-gray-700">
+        <div class="h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm font-medium">Guardano...</p>
+    </div>
+</div>

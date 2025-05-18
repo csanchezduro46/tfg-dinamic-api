@@ -1,0 +1,74 @@
+<div class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Fondo opaco -->
+    <div class="fixed inset-0 bg-gray-500/75 transition-opacity z-10" aria-hidden="true"></div>
+
+    <!-- Contenedor central -->
+    <div class="fixed inset-0 z-30 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div
+                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+
+                <!-- Botón cerrar -->
+                <button (click)="close.emit()"
+                    class="absolute top-2 right-3 text-gray-400 hover:text-black text-xl font-bold cursor-pointer">
+                    &times;
+                </button>
+
+                <!-- Contenido del formulario -->
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h2 class="text-center text-2xl font-semibold text-gray-800 mb-10">{{connection ? 'Guardar' :
+                        'Crear'}}
+                        ejecución programada</h2>
+
+                    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+                        <!-- Selector de plataforma -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Conexión*</label>
+                            <select formControlName="api_call_mapping_id" placeholder="Selecciona una conexión"
+                                class="mt-1 w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                                <option [value]="null" disabled>-- seleccionar mapeo --</option>
+                                <option *ngFor="let m of mappings" [value]="m.id">{{ m.name }}</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Fecha de inicio*</label>
+                            <input formControlName="started_at" type="date" placeholder="Fecha"
+                                class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 cursor-pointer">Repetición*</label>
+                            <select formControlName="repeat" placeholder="Selecciona repetición"
+                                class="mt-1 w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                                <option value="hourly">Cada hora</option>
+                                <option value="daily">Diaria</option>
+                                <option value="weekly">Semanal</option>
+                                <!-- <option value="monthly">Mensual</option> -->
+                                <!-- <option value="custom">Personalizada (cron)</option> -->
+                            </select>
+                        </div>
+
+                        <div *ngIf="form.value.repeat === 'custom'">
+                            <label class="block text-sm font-medium text-gray-700">Expresión CRON*</label>
+                            <input formControlName="cron_expression" placeholder="0 2 * * *"
+                                class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" (click)="close.emit()"
+                                class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer">
+                                Cancelar
+                            </button>
+                            <button type="submit" [disabled]="form.invalid"
+                                class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 disabled:cursor-default disabled:bg-green-600 cursor-pointer invalid:cursor-default invalid:bg-green-600">
+                                Programar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

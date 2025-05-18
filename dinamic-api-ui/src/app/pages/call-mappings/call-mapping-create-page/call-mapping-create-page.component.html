@@ -1,0 +1,97 @@
+<div class="p-6 max-w-6xl space-y-6">
+    <h2 class="text-2xl font-semibold text-gray-800">{{mappingId?'Editar':'Crear'}} mapeo entre conexiones</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre*</label>
+                <input formControlName="name" class="w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Dirección*</label>
+                <select formControlName="direction"
+                    class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                    <option value="to_api">Desde BBDD → API Externa</option>
+                    <option value="from_api">Desde API Externa → BBDD</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Fuente -->
+        <div *ngIf="form.value.direction === 'to_api'">
+            <label class="block text-sm font-medium text-gray-700">Origen: conexión BBDD*</label>
+            <select formControlName="source_db_connection_id"
+                class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                <option *ngFor="let db of dbConnections" [value]="db.id">{{ db.name }}</option>
+            </select>
+
+            <div class="mt-2">
+                <label class="block text-sm font-medium text-gray-700">Tabla origen*</label>
+                <select formControlName="source_table"
+                    class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                    <option *ngFor="let table of tablesDbConnection" [value]="table">{{ table }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div *ngIf="form.value.direction === 'from_api'">
+            <label class="block text-sm font-medium text-gray-700">Origen: plataforma externa*</label>
+            <select formControlName="api_version"
+                class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                <option *ngFor="let conn of platformConnections" [value]="conn.id">{{ conn.name }} ({{
+                    conn.version.platform.name }})</option>
+            </select>
+        </div>
+        <div *ngIf="form.value.direction === 'from_api'">
+            <label class="block text-sm font-medium text-gray-700">Origen: conexión de API*</label>
+            <select formControlName="source_platform_connection_id"
+                class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                <option *ngFor="let api of apiConnections" [value]="api.id">{{ api.name }} ({{
+                    api.group.name }})</option>
+            </select>
+        </div>
+
+        <!-- Destino -->
+        <div *ngIf="form.value.direction === 'to_api'">
+            <label class="block text-sm font-medium text-gray-700">Destino: plataforma externa*</label>
+            <select formControlName="api_version" placeholder="ID de API destino"
+                class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                <option *ngFor="let conn of platformConnections" [value]="conn.id">{{ conn.name }} ({{
+                    conn.version.platform.name }})</option>
+            </select>
+        </div>
+        <div *ngIf="form.value.direction === 'to_api'">
+            <label class="block text-sm font-medium text-gray-700">Destino: llamada de API*</label>
+            <select formControlName="target_api_call_id" placeholder="ID de API destino"
+                class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                <option *ngFor="let api of apiConnections" [value]="api.id">{{ api.name }} ({{
+                    api.group.name }})</option>
+            </select>
+        </div>
+
+        <div *ngIf="form.value.direction === 'from_api'">
+            <label class="block text-sm font-medium text-gray-700">Destino: conexión BBDD*</label>
+            <select formControlName="target_db_connection_id"
+                class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                <option *ngFor="let db of dbConnections" [value]="db.id">{{ db.name }}</option>
+            </select>
+
+            <div class="mt-2">
+                <label class="block text-sm font-medium text-gray-700">Tabla destino*</label>
+                <select formControlName="target_table"
+                    class="w-full border border-gray-300 rounded px-3 py-2 cursor-pointer">
+                    <option *ngFor="let table of tablesDbConnection" [value]="table">{{ table }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" [disabled]="form.invalid"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer">
+                {{mappingId?'Editar':'Crear'}} mapeo
+            </button>
+        </div>
+    </form>
+</div>

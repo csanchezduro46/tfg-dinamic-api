@@ -12,12 +12,16 @@ class Execution extends Model
         'execution_type',
         'response_log',
         'started_at',
-        'finished_at'
+        'finished_at',
+        'repeat',
+        'cron_expression',
+        'last_executed_at'
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
+        'last_executed_at' => 'datetime',
     ];
 
     public function mapping()

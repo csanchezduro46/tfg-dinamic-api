@@ -1,0 +1,31 @@
+<div *ngIf="visible" class="relative z-50">
+    <div class="fixed inset-0 bg-gray-500/75 transition-opacity z-10"></div>
+
+    <div class="fixed inset-0 z-30 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+            <div class="relative bg-white rounded-lg shadow-xl sm:w-full sm:max-w-lg">
+
+                <button (click)="close.emit()"
+                    class="absolute top-2 right-3 text-gray-400 hover:text-black text-xl font-bold cursor-pointer">&times;</button>
+
+                <div class="p-6 space-y-4">
+                    <h2 class="text-lg font-semibold text-gray-800">Ejecutar mapeo manual</h2>
+
+                    <select [(ngModel)]="selectedMappingId" class="w-full border border-gray-300 rounded px-3 py-2">
+                        <option [value]="null" disabled>-- seleccionar mapeo --</option>
+                        <option *ngFor="let m of mappings" [value]="m.id">{{ m.name }}</option>
+                    </select>
+
+                    <div class="flex justify-end gap-2 pt-4">
+                        <button (click)="close.emit()"
+                            class="bg-gray-200 px-4 py-2 rounded-xl hover:bg-gray-300 cursor-pointer">Cancelar</button>
+                        <button (click)="run()" [disabled]="!selectedMappingId"
+                            class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 cursor-pointer">
+                            Ejecutar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

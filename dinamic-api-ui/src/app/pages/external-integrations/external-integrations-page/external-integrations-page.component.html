@@ -1,1 +1,88 @@
-<p>external-integrations-page works!</p>
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer"
+            routerLink="/external-integrations/create">
+            + Nueva conexión
+        </button>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-auto">
+        <table class="w-full text-sm text-gray-700">
+            <thead class="bg-gray-100 border-b text-gray-600 font-semibold text-left">
+                <tr>
+                    <th class="p-4">Nombre</th>
+                    <th class="p-4">Plataforma</th>
+                    <th class="p-4">Versión</th>
+                    <th class="p-4">URL tienda</th>
+                    <th class="p-4">Estado</th>
+                    <th class="p-4">Última comprobación</th>
+                    <th class="p-4" *ngIf="admin">Usuario</th>
+                    <th class="p-4"></th>
+                    <th class="p-4 text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let platform of platforms" class="border-b hover:bg-gray-50 transition">
+                    <td class="p-4 font-medium">{{ platform.name }}</td>
+                    <td class="p-4">{{ platform.version.platform.name }}</td>
+                    <td class="p-4">{{ platform.version.version }}</td>
+                    <td class="p-4">{{ platform.store_url }}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded text-xs font-medium" [ngClass]="{
+                  'bg-green-100 text-green-700': platform.status === 'success',
+                  'bg-red-100 text-red-700': platform.status !== 'success'
+                }">
+                            {{ platform.status }}
+                        </span>
+                    </td>
+                    <td class="p-4">{{ platform.last_checked_at | date: 'short' }}</td>
+                    <td class="p-4" *ngIf="admin">{{ platform.user?.name }}</td>
+                    <td class="p-4 text-right">
+                        <button
+                            class="text-gray-600 hover:text-gray-800 border-2 py-1 px-2 rounded-xl border-green-600 mr-2 cursor-pointer"
+                            (click)="testConnection(platform)">
+                            <span class="text-green-800">Probar conexión</span>
+                        </button>
+                    </td>
+                    <td class="p-4 text-right space-x-2">
+                        <button class="text-blue-600 hover:text-blue-800 cursor-pointer"
+                            [routerLink]="['/external-integrations/edit', platform.id]">
+                            <fa-icon [icon]="['fas', 'pen']"></fa-icon>
+                        </button>
+                        <button (click)="askDelete(platform.id)" class="text-red-600 hover:text-red-800 cursor-pointer">
+                            <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="loading">
+                    <td colspan="7" class="p-6 text-center">
+                        <div class="flex justify-center items-center gap-2 text-blue-600">
+                            <div
+                                class="animate-spin h-5 w-5 border-4 border-blue-500 border-t-transparent rounded-full">
+                            </div>
+                            <span>Cargando datos...</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="!loading && platforms.length === 0" class="text-center text-gray-500 mt-6">
+        <p>No hay plataformas conectadas aún.</p>
+    </div>
+</div>
+
+<!-- Diálogo de confirmación -->
+<app-confirm-popup *ngIf="confirmDeleteId" [title]="'Eliminar conexión'"
+    [message]="'¿Estás seguro de eliminar esta conexión externa?'" (confirm)="confirmDelete()"
+    (cancel)="confirmDeleteId = null">
+</app-confirm-popup>
+
+<!-- Spinner de pantalla completa -->
+<div *ngIf="loadingConnection" class="fixed inset-0 z-50 flex items-center justify-center bg-white/5 backdrop-blur-md">
+    <div class="flex flex-col items-center gap-4 text-gray-700">
+        <div class="h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm font-medium">Comprobando conexión...</p>
+    </div>
+</div>

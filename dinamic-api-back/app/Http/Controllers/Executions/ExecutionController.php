@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ApiCallMapping;
 use App\Models\Execution;
 use App\Services\Executions\ExecutionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,11 +23,22 @@ class ExecutionController extends Controller
 
     public function list()
     {
-        if (!Auth::user()->hasRole('admin')) {
-            return response()->json(Execution::with(['mapping'])->get());
+        $type = request('type'); // puede ser 'manual', 'scheduled' o null
+
+        $query = Execution::with('mapping');
+
+        if ($type) {
+            $query->where('execution_type', $type);
         }
-        return response()->json(Execution::with(['mapping'])->where('apiCallMapping.user', '=', Auth::user()->getId())->get());
+
+        if (!Auth::user()->hasRole('admin')) {
+            $userMappingIds = Auth::user()->apiCallMappings()->pluck('id');
+            $query->whereIn('api_call_mapping_id', $userMappingIds);
+        }
+
+        return response()->json($query->orderByDesc('created_at')->get());
     }
+
 
     public function listByMapping($id)
     {
@@ -200,6 +213,20 @@ class ExecutionController extends Controller
         $execution->delete();
 
         return response()->json(['msg' => 'Ejecución eliminada correctamente.']);
+    }
+
+    public function runScheduledCommand()
+    {
+        if (!auth()->user()?->hasRole('admin')) {
+            return response()->json(['msg' => 'No autorizado'], 403);
+        }
+
+        Artisan::call('app:scheduled-executions');
+
+        return response()->json([
+            'msg' => 'Comando lanzado correctamente',
+            'output' => Artisan::output()
+        ]);
     }
 
 }

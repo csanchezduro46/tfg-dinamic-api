@@ -8,6 +8,7 @@ use App\Models\Platform;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PlatformVersionController extends Controller
 {
@@ -78,7 +79,13 @@ class PlatformVersionController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'version' => 'string|max:50|unique:platform_versions,version,NULL,id,platform_id,' . $version->platform_id,
+            'version' => [
+                'string',
+                'max:50',
+                Rule::unique('platform_versions', 'version')
+                    ->ignore($version->id)
+                    ->where('platform_id', $version->platform_id)
+            ],
             'description' => 'nullable|string|max:255',
         ], [
             'version.unique' => 'Ya existe esa versión para la plataforma seleccionada.',
