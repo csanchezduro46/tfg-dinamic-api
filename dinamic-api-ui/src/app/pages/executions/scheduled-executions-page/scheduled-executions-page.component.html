@@ -4,6 +4,10 @@
             (click)="onNew()">
             + Programar ejecución
         </button>
+        <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer"
+            (click)="launchScheduledCommand()" *ngIf="admin">
+            Lanzar comando
+        </button>
     </div>
 
     <app-scheduled-execution-modal  *ngIf="showScheduledModal" [mappings]="mappings" [connection]="editing"

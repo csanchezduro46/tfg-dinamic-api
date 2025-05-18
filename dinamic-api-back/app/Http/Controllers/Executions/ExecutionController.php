@@ -215,7 +215,7 @@ class ExecutionController extends Controller
         return response()->json(['msg' => 'Ejecución eliminada correctamente.']);
     }
 
-    public function runScheduled()
+    public function runScheduledCommand()
     {
         if (!auth()->user()?->hasRole('admin')) {
             return response()->json(['msg' => 'No autorizado'], 403);

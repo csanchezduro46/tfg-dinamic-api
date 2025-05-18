@@ -6,6 +6,7 @@ import { ApiCallMappingService } from '../../../shared/services/api/api-call-map
 import { ExecutionService } from '../../../shared/services/api/execution.service';
 import { GlobalInfoService } from '../../../shared/services/generic/global-info.service';
 import { GlobalSuccessService } from '../../../shared/services/generic/global-success.service';
+import { AuthService } from '../../../shared/services/oauth/auth.service';
 import { ConfirmPopupComponent } from '../../../shared/ui/confirm-popup/confirm-popup.component';
 import { ScheduledExecutionModalComponent } from '../scheduled-execution-modal/scheduled-execution-modal.component';
 
@@ -24,14 +25,16 @@ export class ScheduledExecutionsPageComponent implements OnInit {
   mappings: any[] = [];
   editing!: any;
   executionLoading: boolean = false;
+  admin: boolean = false;
 
   constructor(private readonly executionService: ExecutionService, library: FaIconLibrary,
-    private readonly globalSuccessService: GlobalSuccessService,
+    private readonly globalSuccessService: GlobalSuccessService, private readonly auth: AuthService,
     private readonly mappingService: ApiCallMappingService, private readonly globalInfoServive: GlobalInfoService) {
     library.addIconPacks(fas)
   }
 
   ngOnInit(): void {
+    this.admin = this.auth.hasRole('admin');
     this.loading = true;
     this.mappingService.getAll().subscribe(m => this.mappings = m);
     this.fetchScheduled();
@@ -100,8 +103,16 @@ export class ScheduledExecutionsPageComponent implements OnInit {
 
   openLog(execution: any) {
     const logs = execution.response_log;
-    if(logs) {
-      this.globalInfoServive.show(logs,'Mensajes de respuesta','info')
+    if (logs) {
+      this.globalInfoServive.show(logs, 'Mensajes de respuesta', 'info')
     }
+  }
+
+  launchScheduledCommand() {
+    this.executionService.launchScheduledCommand().subscribe({
+      next: () => {
+        this.globalSuccessService.show('El comando se ha lanzado correctamente, en breve se irán actualizando todas las sincronizaciones.', 'Commando ejecutado');
+      }
+    })
   }
 }

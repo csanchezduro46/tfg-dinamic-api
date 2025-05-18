@@ -51,4 +51,10 @@ export class ExecutionService {
             catchError(err => this.errorHandler.handle(err))
         );
     }
+
+    launchScheduledCommand() {
+        return this.http.get(`${this.baseUrl}/api/executions/trigger-scheduled`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
+    }
 }
