@@ -38,6 +38,12 @@ export class AuthService {
         );
     }
 
+    update(data: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/oauth/update`, data).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
+    }
+
     register(data: any): Observable<any> {
         return this.http.post(`${this.baseUrl}/oauth/signup`, data).pipe(
             catchError(err => this.errorHandler.handle(err))

@@ -124,6 +124,10 @@ Route::prefix('/executions')->middleware(['auth:sanctum', 'verified'])->group(fu
     Route::put('/{id}', [ExecutionController::class, 'update']);
     Route::delete('/{id}', [ExecutionController::class, 'delete']);
 
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/trigger-scheduled', [ExecutionController::class, 'runScheduledCommand']);
+    });
+
     // History
     Route::get('/history/{executionId}', [HistoryExecutionController::class, 'show']);
 });

@@ -8,7 +8,7 @@ import { ApiCallMappingService } from '../../../shared/services/api/api-call-map
 import { ExecutionService } from '../../../shared/services/api/execution.service';
 import { GlobalInfoService } from '../../../shared/services/generic/global-info.service';
 import { GlobalSuccessService } from '../../../shared/services/generic/global-success.service';
-import { ExecutionModalComponent } from '../execution-modal.component/execution-modal.component';
+import { ExecutionModalComponent } from '../execution-modal/execution-modal.component';
 
 @Component({
   selector: 'app-executions-page',
@@ -66,7 +66,6 @@ export class ExecutionsPageComponent implements OnInit {
   openLog(execution: any) {
     const logs = execution.response_log;
     if(logs) {
-      const logString = JSON.parse(logs);
       this.globalInfoServive.show(logs,'Mensajes de respuesta','info')
     }
   }
