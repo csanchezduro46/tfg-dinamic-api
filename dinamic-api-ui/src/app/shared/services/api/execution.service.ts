@@ -16,6 +16,12 @@ export class ExecutionService {
         );
     }
 
+    getScheduled(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/api/executions?type=scheduled`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
+    }
+
     getByMapping(id: number) {
         return this.http.get(`${this.baseUrl}/api/executions/mappings/${id}`).pipe(
             catchError(err => this.errorHandler.handle(err))

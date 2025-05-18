@@ -74,7 +74,7 @@ export const routes: Routes = [
           {
             path: 'list',
             loadComponent: () =>
-              import('./pages/external-integrations/platforms-page/platforms-page.component').then(m => m.PlatformsPageComponent),
+              import('./pages/platforms/platforms-page/platforms-page.component').then(m => m.PlatformsPageComponent),
             title: 'Plataformas'
           },
           {

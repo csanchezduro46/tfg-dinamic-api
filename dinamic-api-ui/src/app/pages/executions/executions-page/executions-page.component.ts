@@ -63,7 +63,8 @@ export class ExecutionsPageComponent implements OnInit {
   }
 
   openLog(execution: any) {
-
+    const logs = execution.response_log;
+    console.log(logs)
   }
 
   repeat(execution: any) {

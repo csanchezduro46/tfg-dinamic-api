@@ -1,6 +1,13 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer"
+            (click)="onNew()">
+            + Programar ejecución
+        </button>
     </div>
+
+    <app-scheduled-execution-modal  *ngIf="showScheduledModal" [mappings]="mappings" [connection]="editing"
+        (close)="showScheduledModal = false" (created)="fetchScheduled()" />
 
     <div class="bg-white rounded-lg shadow overflow-auto">
         <table class="w-full text-sm text-gray-700">
@@ -20,10 +27,10 @@
                     <td class="p-4">{{ e.cron_expression || '-' }}</td>
                     <td class="p-4">{{ e.last_executed_at | date: 'short' }}</td>
                     <td class="p-4 text-right space-x-2">
-                        <button class="text-blue-600 hover:text-blue-800">
+                        <button class="text-blue-600 hover:text-blue-800 cursor-pointer" (click)="onEdit(e)">
                             <fa-icon [icon]="['fas', 'pen']"></fa-icon>
                         </button>
-                        <button (click)="onDelete(e.id)" class="text-red-600 hover:text-red-800">
+                        <button (click)="askDelete(e.id)" class="text-red-600 hover:text-red-800 cursor-pointer">
                             <fa-icon [icon]="['fas', 'trash']"></fa-icon>
                         </button>
                     </td>
@@ -46,3 +53,9 @@
         </table>
     </div>
 </div>
+
+<!-- Diálogo de confirmación -->
+<app-confirm-popup *ngIf="confirmDeleteId" [title]="'Eliminar ejecución'"
+    [message]="'¿Estás seguro de eliminar esta sincronización? Se eliminarán las proximas ejecuciones.'"
+    (confirm)="confirmDelete()" (cancel)="confirmDeleteId = null">
+</app-confirm-popup>
