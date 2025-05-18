@@ -60,6 +60,7 @@ class ExecutionService
             $execution->update([
                 'status' => $status,
                 'finished_at' => now(),
+                'last_executed_at' => now(),
                 'response_log' => [
                     'rows_sent' => count($payloads),
                     'results_errors' => $responses
@@ -80,6 +81,7 @@ class ExecutionService
             $execution->update([
                 'status' => 'failed',
                 'finished_at' => now(),
+                'last_executed_at' => now(),
                 'response_log' => ['error' => $e->getMessage()]
             ]);
 

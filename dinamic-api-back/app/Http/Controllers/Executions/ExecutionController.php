@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ApiCallMapping;
 use App\Models\Execution;
 use App\Services\Executions\ExecutionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -211,6 +213,20 @@ class ExecutionController extends Controller
         $execution->delete();
 
         return response()->json(['msg' => 'Ejecución eliminada correctamente.']);
+    }
+
+    public function runScheduled()
+    {
+        if (!auth()->user()?->hasRole('admin')) {
+            return response()->json(['msg' => 'No autorizado'], 403);
+        }
+
+        Artisan::call('app:scheduled-executions');
+
+        return response()->json([
+            'msg' => 'Comando lanzado correctamente',
+            'output' => Artisan::output()
+        ]);
     }
 
 }
