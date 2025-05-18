@@ -24,11 +24,13 @@ export class PlatformApiFormComponent implements OnInit {
   @Output() correct = new EventEmitter<void>();
 
   form!: FormGroup;
+  payload_example: string = '';
 
   constructor(private readonly fb: FormBuilder, private readonly apisService: ApiCallService,
     private readonly versionService: PlatformVersionService, private readonly genericError: GlobalErrorService) { }
 
   ngOnInit(): void {
+    this.payload_example = JSON.parse('{"customer":{"firstName":"Cristina","lastName":"S\u00e1nchez","email":"csanchezduro46@uoc.edu","verified_email":true,"addresses":[{"address1":"Calle Prueba, 1","city":"Logro\u00f1o","country":"Espa\u00f1a"}]}, "query": "mutation customerCreate($input: CustomerInput!) { customerCreate(input: $input) { userErrors { field message } customer { id email phone taxExempt firstName lastName amountSpent { amount currencyCode } smsMarketingConsent { marketingState marketingOptInLevel consentUpdatedAt } } } }"}');
     const payload = this.api?.payload_example
     ? JSON.stringify(this.api.payload_example, null, 2)
     : '';

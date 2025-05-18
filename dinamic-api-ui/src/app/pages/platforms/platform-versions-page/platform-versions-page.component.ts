@@ -5,6 +5,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { User } from '../../../core/models/user.model';
 import { PlatformVersionService } from '../../../shared/services/api/platform-version.service';
 import { PlatformService } from '../../../shared/services/api/platform.service';
+import { GlobalSuccessService } from '../../../shared/services/generic/global-success.service';
 import { AuthService } from '../../../shared/services/oauth/auth.service';
 import { ConfirmPopupComponent } from '../../../shared/ui/confirm-popup/confirm-popup.component';
 import { PlatformVersionFormComponent } from '../platform-version-form/platform-version-form.component';
@@ -28,7 +29,8 @@ export class PlatformVersionsPageComponent implements OnInit {
   platforms: any[] = [];;
 
   constructor(private readonly versionService: PlatformVersionService, library: FaIconLibrary,
-    private readonly auth: AuthService, private readonly platformService: PlatformService) {
+    private readonly auth: AuthService, private readonly platformService: PlatformService,
+    private readonly globalSuccessService: GlobalSuccessService) {
     library.addIconPacks(fas);
   }
 
@@ -59,7 +61,7 @@ export class PlatformVersionsPageComponent implements OnInit {
     this.editing = version;
     this.showFormPopup = true;
   }
-  
+
   onNew(): void {
     this.editing = null;
     this.showFormPopup = true;
@@ -67,6 +69,8 @@ export class PlatformVersionsPageComponent implements OnInit {
 
   onSaved(): void {
     this.showFormPopup = false;
+    const msg = this.editing ? 'La versión de la plataforma ha sido editada correctamente.' : 'La versión de la plataforma ha sido creada correctamente.';
+    this.globalSuccessService.show(msg, 'Operación realizada correctamente');
     this.editing = null;
     setTimeout(() => {
       this.fetch();

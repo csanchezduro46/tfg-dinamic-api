@@ -4,6 +4,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { User } from '../../../core/models/user.model';
 import { PlatformService } from '../../../shared/services/api/platform.service';
+import { GlobalSuccessService } from '../../../shared/services/generic/global-success.service';
 import { AuthService } from '../../../shared/services/oauth/auth.service';
 import { ConfirmPopupComponent } from '../../../shared/ui/confirm-popup/confirm-popup.component';
 import { PlatformFormComponent } from '../platform-form/platform-form.component';
@@ -26,7 +27,7 @@ export class PlatformsPageComponent implements OnInit {
   showFormPopup = false;
 
   constructor(private readonly platformService: PlatformService, library: FaIconLibrary,
-    private readonly auth: AuthService) {
+    private readonly auth: AuthService, private readonly globalSuccessService: GlobalSuccessService) {
     library.addIconPacks(fas);
   }
 
@@ -62,6 +63,8 @@ export class PlatformsPageComponent implements OnInit {
 
   onSaved(): void {
     this.showFormPopup = false;
+    const msg = this.editing ? 'La plataforma ha sido editada correctamente.' : 'La plataforma ha sido creada correctamente.';
+    this.globalSuccessService.show(msg, 'Operación realizada correctamente');
     this.editing = null;
     setTimeout(() => {
       this.fetch();
