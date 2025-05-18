@@ -6,8 +6,9 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fal } from '@fortawesome/pro-light-svg-icons';
 import { ApiCallMappingService } from '../../../shared/services/api/api-call-mapping.service';
 import { ExecutionService } from '../../../shared/services/api/execution.service';
+import { GlobalInfoService } from '../../../shared/services/generic/global-info.service';
 import { GlobalSuccessService } from '../../../shared/services/generic/global-success.service';
-import { ExecutionModalComponent } from '../execution-modal/execution-modal.component';
+import { ExecutionModalComponent } from '../execution-modal.component/execution-modal.component';
 
 @Component({
   selector: 'app-executions-page',
@@ -25,7 +26,7 @@ export class ExecutionsPageComponent implements OnInit {
   selectedMappingId: number | null = null;
 
   constructor(private readonly executionsService: ExecutionService, library: FaIconLibrary,
-    private readonly mappingService: ApiCallMappingService, private readonly globalSuccessService: GlobalSuccessService) {
+    private readonly mappingService: ApiCallMappingService, private readonly globalInfoServive: GlobalInfoService) {
     library.addIconPacks(fal, fas);
   }
 
@@ -64,7 +65,10 @@ export class ExecutionsPageComponent implements OnInit {
 
   openLog(execution: any) {
     const logs = execution.response_log;
-    console.log(logs)
+    if(logs) {
+      const logString = JSON.parse(logs);
+      this.globalInfoServive.show(logs,'Mensajes de respuesta','info')
+    }
   }
 
   repeat(execution: any) {

@@ -11,12 +11,13 @@ import { NavGroup, NAV_ITEMS } from './nav-items';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmPopupComponent } from '../ui/confirm-popup/confirm-popup.component';
 import { GenericSuccessPopupComponent } from '../ui/generic-success-popup/generic-success-popup.component';
+import { GenericInfoPopupComponent } from '../ui/generic-info-popup/generic-info-popup.component';
 
 @Component({
   standalone: true,
   selector: 'app-layout',
   imports: [RouterOutlet, CommonModule, FontAwesomeModule, RouterLinkWithHref, GenericErrorPopupComponent, RouterModule,
-    ConfirmPopupComponent, GenericSuccessPopupComponent],
+    ConfirmPopupComponent, GenericSuccessPopupComponent, GenericInfoPopupComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
