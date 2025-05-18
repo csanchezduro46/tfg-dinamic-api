@@ -66,7 +66,6 @@ export class ExecutionsPageComponent implements OnInit {
   openLog(execution: any) {
     const logs = execution.response_log;
     if(logs) {
-      const logString = JSON.parse(logs);
       this.globalInfoServive.show(logs,'Mensajes de respuesta','info')
     }
   }

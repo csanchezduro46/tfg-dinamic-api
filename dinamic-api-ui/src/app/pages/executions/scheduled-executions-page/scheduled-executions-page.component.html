@@ -18,6 +18,7 @@
                     <th class="p-4">Cron</th>
                     <th class="p-4">Último estado</th>
                     <th class="p-4">Última ejecución</th>
+                    <th class="p-4"></th>
                     <th class="p-4 text-right">Acciones</th>
                 </tr>
             </thead>
@@ -36,7 +37,18 @@
                         </span>
                     </td>
                     <td class="p-4">{{ e.last_executed_at | date: 'short' }}</td>
+                    <td class="p-4 text-right">
+                        <button
+                            class="text-gray-600 hover:text-gray-800 border-2 py-1 px-2 rounded-xl border-green-600 mr-2 cursor-pointer"
+                            (click)="launch(e)">
+                            <span class="text-green-800">Lanzar ahora</span>
+                        </button>
+                    </td>
                     <td class="p-4 text-right space-x-2">
+                        <button class="text-yellow-600 hover:text-yellow-800 cursor-pointer" title="Ver log"
+                            (click)="openLog(e)" *ngIf="e.response_log">
+                            <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                        </button>
                         <button class="text-blue-600 hover:text-blue-800 cursor-pointer" (click)="onEdit(e)">
                             <fa-icon [icon]="['fas', 'pen']"></fa-icon>
                         </button>
@@ -61,6 +73,14 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Spinner de pantalla completa -->
+<div *ngIf="executionLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/5 backdrop-blur-md">
+    <div class="flex flex-col items-center gap-4 text-gray-700">
+        <div class="h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm font-medium">Ejecutando...</p>
     </div>
 </div>
 

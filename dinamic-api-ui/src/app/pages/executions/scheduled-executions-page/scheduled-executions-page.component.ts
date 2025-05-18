@@ -4,6 +4,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { ApiCallMappingService } from '../../../shared/services/api/api-call-mapping.service';
 import { ExecutionService } from '../../../shared/services/api/execution.service';
+import { GlobalInfoService } from '../../../shared/services/generic/global-info.service';
 import { GlobalSuccessService } from '../../../shared/services/generic/global-success.service';
 import { ConfirmPopupComponent } from '../../../shared/ui/confirm-popup/confirm-popup.component';
 import { ScheduledExecutionModalComponent } from '../scheduled-execution-modal/scheduled-execution-modal.component';
@@ -22,10 +23,11 @@ export class ScheduledExecutionsPageComponent implements OnInit {
   confirmDeleteId!: number | null;
   mappings: any[] = [];
   editing!: any;
+  executionLoading: boolean = false;
 
   constructor(private readonly executionService: ExecutionService, library: FaIconLibrary,
     private readonly globalSuccessService: GlobalSuccessService,
-    private readonly mappingService: ApiCallMappingService) {
+    private readonly mappingService: ApiCallMappingService, private readonly globalInfoServive: GlobalInfoService) {
     library.addIconPacks(fas)
   }
 
@@ -79,6 +81,27 @@ export class ScheduledExecutionsPageComponent implements OnInit {
         },
         error: () => this.confirmDeleteId = null
       });
+    }
+  }
+
+  launch(execution: any) {
+    this.executionLoading = true;
+    this.executionService.launch(execution.id).subscribe({
+      next: () => {
+        this.globalSuccessService.show('La ejecución se ha realizado correctamente.', 'Sincronización completa');
+        this.executionLoading = false;
+        this.fetchScheduled();
+      }, error: () => {
+        this.executionLoading = false
+        this.fetchScheduled();
+      }
+    });
+  }
+
+  openLog(execution: any) {
+    const logs = execution.response_log;
+    if(logs) {
+      this.globalInfoServive.show(logs,'Mensajes de respuesta','info')
     }
   }
 }
