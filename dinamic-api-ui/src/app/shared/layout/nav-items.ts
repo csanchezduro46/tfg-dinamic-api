@@ -23,12 +23,12 @@ export const NAV_ITEMS: NavGroup[] = [
     ]
   },
   {
-    label: 'Mis conexiones',
-    icon: ['fal', 'database'],
+    label: 'Integraciones',
+    icon: ['fal', 'layer-group'],
     children: [
-      { label: 'Mis plataformas', path: '/external-integrations' },
-      { label: 'Mis BBDD', path: '/databases/list' },
-      { label: 'Conexiones', path: '/connections/mappings' },
+      { label: 'Plataformas externas', path: '/external-integrations' },
+      { label: 'BBDD', path: '/databases/list' },
+      { label: 'Sincronizaciones', path: '/connections/mappings' },
     ]
   },
   {

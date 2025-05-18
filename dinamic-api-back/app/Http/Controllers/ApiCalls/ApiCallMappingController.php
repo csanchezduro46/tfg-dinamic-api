@@ -13,7 +13,7 @@ class ApiCallMappingController extends Controller
 {
     public function getMappings()
     {
-        if (!Auth::user()->hasRole('admin')) {
+        if (Auth::user()->hasRole('admin')) {
             return response()->json(ApiCallMapping::with(['user', 'sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb'])->get());
         }
         return response()->json(Auth::user()->apiCallMappings()->with(['sourceApiCall', 'targetApiCall', 'sourceDb', 'targetDb'])->get());
@@ -27,7 +27,7 @@ class ApiCallMappingController extends Controller
             return response()->json(['msg' => 'Forbidden'], 403);
         }
 
-        return response()->json($mapping->load('fields'));
+        return response()->json($mapping->load('fields', 'sourceApiCall', 'targetApiCall'));
     }
 
     public function store(Request $request)
@@ -42,7 +42,7 @@ class ApiCallMappingController extends Controller
             'target_api_call_id' => 'nullable|exists:api_calls,id',
             'target_db_connection_id' => 'nullable|exists:database_connections,id',
             'target_table' => 'nullable|string|max:100',
-            'fields' => 'required|array'
+            'fields' => 'nullable|array'
         ];
 
         if (Auth::user()->hasRole('admin')) {
@@ -52,7 +52,6 @@ class ApiCallMappingController extends Controller
         $validator = Validator::make($request->all(), $rules, [
             'name.required' => 'El nombre del mapeo es obligatorio.',
             'direction.required' => 'La dirección del mapeo es obligatoria.',
-            'fields.required' => 'Debe especificar los campos a mapear.',
             'user_id.required' => 'El usuario es obligatorio para un mapeo creado por un administrador.',
             'user_id.exists' => 'El usuario debe existir'
         ]);

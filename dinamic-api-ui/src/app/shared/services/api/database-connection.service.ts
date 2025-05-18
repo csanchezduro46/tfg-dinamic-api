@@ -28,8 +28,20 @@ export class DatabaseConnectionService {
         );
     }
 
+    getTables(id: number): Observable<any> {
+        return this.http.get(`${this.baseUrl}/api/db-connections/${id}/tables`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
+    }
+
+    getTableColumns(id: number, table: string): Observable<any> {
+        return this.http.get(`${this.baseUrl}/api/db-connections/${id}/tables/${table}/columns`).pipe(
+            catchError(err => this.errorHandler.handle(err))
+        );
+    }
+
     create(data: any): Observable<any> {
-        return this.http.post('${this.baseUrl}/api/db-connections', data).pipe(
+        return this.http.post(`${this.baseUrl}/api/db-connections`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }

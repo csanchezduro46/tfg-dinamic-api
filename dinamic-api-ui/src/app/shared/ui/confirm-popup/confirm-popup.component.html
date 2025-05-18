@@ -1,4 +1,4 @@
-<div class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div class="relative z-1000" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="fixed inset-0 bg-gray-500/75 transition-opacity z-10" aria-hidden="true"></div>
     <div class="fixed inset-0 z-30 w-screen overflow-y-auto">
         <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -12,11 +12,11 @@
                     </div>
                     <div class="flex justify-end space-x-2">
                         <button (click)="cancel.emit()"
-                            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
                             {{ cancelLabel || 'Cancelar' }}
                         </button>
                         <button (click)="confirm.emit()"
-                            class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                            class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 cursor-pointer">
                             {{ confirmLabel || 'Confirmar' }}
                         </button>
                     </div>

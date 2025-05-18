@@ -1,10 +1,15 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
-            *ngIf="user?.roles?.includes('admin')">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow cursor-pointer" *ngIf="admin"
+            (click)="onNew()">
             + Nueva API
         </button>
     </div>
+
+    <!-- Formulario -->
+    <app-platform-api-form *ngIf="showFormPopup" [api]="editing" [platforms]="platforms" [versions]="versions"
+        [groups]="groups" (correct)="onSaved()" (cancel)="editing = null; showFormPopup=false">
+    </app-platform-api-form>
 
     <div class="bg-white rounded-lg shadow overflow-auto">
         <table class="w-full text-sm text-gray-700">
@@ -15,7 +20,7 @@
                     <th class="p-4">Endpoint</th>
                     <th class="p-4">Plataforma</th>
                     <th class="p-4">Versión</th>
-                    <th class="p-4 text-right" *ngIf="user?.roles?.includes('admin')">Acciones</th>
+                    <th class="p-4 text-right" *ngIf="admin">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,11 +30,11 @@
                     <td class="p-4">{{ api.endpoint }}</td>
                     <td class="p-4">{{ api.version?.platform?.name || '-' }}</td>
                     <td class="p-4">{{ api.version?.version || '-' }}</td>
-                    <td class="p-4 text-right space-x-2" *ngIf="user?.roles?.includes('admin')">
-                        <button class="text-blue-600 hover:text-blue-800">
+                    <td class="p-4 text-right space-x-2" *ngIf="admin">
+                        <button class="text-blue-600 hover:text-blue-800 cursor-pointer" (click)="onEdit(api)">
                             <fa-icon [icon]="['fas', 'pen']"></fa-icon>
                         </button>
-                        <button (click)="onDelete(api.id)" class="text-red-600 hover:text-red-800">
+                        <button (click)="askDelete(api.id)" class="text-red-600 hover:text-red-800 cursor-pointer">
                             <fa-icon [icon]="['fas', 'trash']"></fa-icon>
                         </button>
                     </td>
@@ -52,3 +57,9 @@
         </table>
     </div>
 </div>
+
+<!-- Diálogo de confirmación -->
+<app-confirm-popup *ngIf="confirmDeleteId" [title]="'Eliminar llamada'"
+    [message]="'¿Estás seguro de eliminar esta llamada (API)? Se eliminarán todas las conexiones y datos que tenga relacionados.'"
+    (confirm)="confirmDelete()" (cancel)="confirmDeleteId = null">
+</app-confirm-popup>

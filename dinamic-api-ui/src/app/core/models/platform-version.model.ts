@@ -3,7 +3,7 @@ import { Platform } from "./platform.model";
 
 export interface PlatformVersion {
   id: number;
-  platformId: number;
+  platform_id: number;
   version: string;
   description?: string;
   platform?: Platform;

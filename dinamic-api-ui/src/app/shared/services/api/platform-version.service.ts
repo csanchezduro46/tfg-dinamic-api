@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ErrorHandlerService } from '../errors/error-handler.service';
+import { PlatformVersion } from '../../../core/models/platform-version.model';
 
 @Injectable({ providedIn: 'root' })
 export class PlatformVersionService {
@@ -16,14 +17,14 @@ export class PlatformVersionService {
         );
     }
 
-    getByPlatform(platformId: number) {
+    getByPlatform(platformId: number): Observable<any> {
         return this.http.get(`${this.baseUrl}/api/platforms/${platformId}/versions`).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }
 
-    create(platformId: number, data: any) {
-        return this.http.post(`${this.baseUrl}/api/platforms/${platformId}/versions`, data).pipe(
+    create(data: PlatformVersion) {
+        return this.http.post(`${this.baseUrl}/api/platforms/${data.platform_id}/versions`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }

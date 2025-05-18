@@ -71,12 +71,6 @@ class ApiCallController extends Controller
 
     public function update(Request $request, $id)
     {
-        if($request->platform_version_id) {
-            return response()->json([
-                'msg' => 'Error en la petición',
-                'errors' => 'La versión de la plataforma no se puede cambiar.'
-            ], 400);
-        }
         $apiCall = ApiCall::findOrFail($id);
 
         $validator = Validator::make($request->all(), [

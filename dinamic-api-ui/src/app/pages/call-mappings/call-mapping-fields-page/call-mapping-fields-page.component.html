@@ -1,1 +1,52 @@
-<p>call-mapping-fields-page works!</p>
+<div class="p-6 max-w-6xl space-y-6">
+    <h2 class="text-2xl font-semibold text-gray-800">Mapeo de campos</h2>
+
+    <div *ngIf="loading" class="text-center py-8 text-gray-500">Cargando campos...</div>
+
+    <div *ngIf="!loading">
+        <div *ngIf="sourceFields.length === 0 || targetFields.length === 0"
+            class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded text-sm">
+            No hay campos disponibles para mapear.
+            Verifica que la tabla seleccionada (en BBDD) o el payload/response de la API contenga datos válidos.
+        </div>
+        <table class="w-full text-sm border rounded overflow-hidden">
+            <thead class="bg-gray-100 text-left text-gray-700 font-semibold">
+                <tr>
+                    <th class="p-3">Campo origen</th>
+                    <th class="p-3">Campo destino</th>
+                    <th class="p-3 text-right">
+                        <button (click)="addMapping()" class="text-blue-600 hover:underline text-sm">+ Añadir</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let mapping of fieldMappings; let i = index" class="border-t">
+                    <td class="p-3">
+                        <select [(ngModel)]="mapping.source_field" [name]="'source-' + i"
+                            class="w-full border border-gray-300 rounded px-2 py-1">
+                            <option [value]="''">-- seleccionar --</option>
+                            <option *ngFor="let f of sourceFields" [value]="f">{{ f }}</option>
+                        </select>
+                    </td>
+                    <td class="p-3">
+                        <select [(ngModel)]="mapping.target_field" [name]="'target-' + i"
+                            class="w-full border border-gray-300 rounded px-2 py-1">
+                            <option [value]="''">-- seleccionar --</option>
+                            <option *ngFor="let f of targetFields" [value]="f">{{ f }}</option>
+                        </select>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button (click)="removeMapping(i, mapping.id)"
+                            class="text-red-600 hover:underline text-sm cursor-pointer">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="flex justify-end mt-4">
+            <button (click)="save()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer">
+                Guardar mapeo
+            </button>
+        </div>
+    </div>
+</div>

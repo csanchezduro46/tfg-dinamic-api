@@ -131,7 +131,7 @@ class PlatformConnectionCredentialsController extends Controller
         return response()->json([
             'msg' => 'Conexión validada correctamente.',
             'connection' => $connection->load('version.platform')
-        ]);
+        ], 200);
     }
 
 

@@ -1,0 +1,128 @@
+<div class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <!-- Fondo opaco -->
+  <div class="fixed inset-0 bg-gray-500/75 transition-opacity z-10" aria-hidden="true"></div>
+
+  <!-- Contenedor central -->
+  <div class="fixed inset-0 z-30 w-screen overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div
+        class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
+
+        <!-- Botón cerrar -->
+        <button (click)="cancel.emit()"
+          class="absolute top-2 right-3 text-gray-400 hover:text-black text-xl font-bold cursor-pointer">
+          &times;
+        </button>
+
+        <!-- Contenido -->
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">{{api ? 'Guardar' : 'Crear'}} API</h2>
+
+          <!-- Formulario -->
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Plataforma -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Plataforma*</label>
+                <select formControlName="platform_id" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+                  <option *ngFor="let p of platforms" [value]="p.id">{{ p.name }}</option>
+                </select>
+              </div>
+
+              <!-- Versión -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Versión*</label>
+                <select formControlName="platform_version_id" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+                  <option *ngFor="let v of versions" [value]="v.id">{{ v.version }}</option>
+                </select>
+              </div>
+
+              <!-- Grupo -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Grupo*</label>
+                <select formControlName="group_id" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+                  <option *ngFor="let g of groups" [value]="g.id">{{ g.name }}</option>
+                </select>
+              </div>
+
+              <!-- Nombre -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre*</label>
+                <input formControlName="name" class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+
+              <!-- Endpoint -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Endpoint*</label>
+                <input formControlName="endpoint" class="mt-1 w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+
+              <!-- Método -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Método*</label>
+                <select formControlName="method" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+                  <option>MUTATION</option>
+                  <option>GET</option>
+                  <option>POST</option>
+                  <option>PUT</option>
+                  <option>DELETE</option>
+                </select>
+              </div>
+
+              <!-- Tipo de request -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Tipo de petición*</label>
+                <select formControlName="request_type" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+                  <!-- <option value="json">JSON</option> -->
+                  <option value="graphql">GraphQL</option>
+                  <!-- <option value="form">Form</option> -->
+                </select>
+              </div>
+
+              <!-- Tipo de respuesta -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Tipo de respuesta*</label>
+                <select formControlName="response_type" class="mt-1 w-full border border-gray-300 rounded px-3 py-2">
+                  <option value="json">JSON</option>
+                  <!-- <option value="xml">XML</option> -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Textareas -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Payload de petición*</label>
+              <textarea formControlName="payload_example" rows="6"
+                class="mt-1 w-full border border-gray-300 rounded px-3 py-2 font-mono"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Descripción</label>
+              <textarea formControlName="description"
+                class="mt-1 w-full border border-gray-300 rounded px-3 py-2"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Respuesta de ejemplo</label>
+              <textarea formControlName="response_example"
+                class="mt-1 w-full border border-gray-300 rounded px-3 py-2 font-mono"></textarea>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end space-x-2">
+              <button type="button" (click)="cancel.emit()"
+                class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer">
+                Cancelar
+              </button>
+              <button type="submit" [disabled]="form.invalid"
+                class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 disabled:cursor-default disabled:bg-green-600 cursor-pointer">
+                {{api ? 'Guardar' : 'Crear'}} API
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

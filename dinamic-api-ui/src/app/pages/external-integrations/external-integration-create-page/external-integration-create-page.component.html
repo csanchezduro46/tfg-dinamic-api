@@ -1,0 +1,89 @@
+<div class="p-6 max-w-6xl space-y-8">
+
+    <h2 class="text-2xl font-semibold text-gray-800">{{connectionId ? 'Editar' : 'Crear'}} conexión externa</h2>
+
+    <!-- Paso 1: datos de conexión -->
+    <form *ngIf="step === 1" [formGroup]="connectionForm" (ngSubmit)="createConnection()"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Nombre*</label>
+            <input formControlName="name" class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Plataforma*</label>
+            <select formControlName="platform_id" class="w-full border border-gray-300 rounded px-3 py-2">
+                <option value="">Selecciona una</option>
+                <option *ngFor="let p of platforms" [value]="p.id">{{ p.name }}</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Versión*</label>
+            <select formControlName="platform_version_id" class="w-full border border-gray-300 rounded px-3 py-2">
+                <option value="">Selecciona una</option>
+                <option *ngFor="let v of versions" [value]="v.id">{{ v.version }}</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Store URL*</label>
+            <input formControlName="store_url" class="w-full border border-gray-300 rounded px-3 py-2" />
+        </div>
+
+        <div class="col-span-2 flex justify-between">
+            <button type="button" routerLink="/external-integrations"
+                class="text-red-600 hover:underline cursor-pointer">
+                Cancelar
+            </button>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer">
+                {{ connectionId ? 'Siguiente' : 'Crear conexión' }}
+            </button>
+        </div>
+    </form>
+
+    <!-- Paso 2: credenciales -->
+    <div *ngIf="step === 2" class="space-y-4">
+        <div *ngIf="!credentialsForm || loadingCredentials">
+            <td colspan="7" class="p-6 text-center">
+                <div class="flex justify-center items-center gap-2 text-blue-600">
+                    <div class="animate-spin h-5 w-5 border-4 border-blue-500 border-t-transparent rounded-full">
+                    </div>
+                    <span>Cargando datos...</span>
+                </div>
+            </td>
+        </div>
+        <form *ngIf="credentialsForm && !loadingCredentials" [formGroup]="credentialsForm"
+            (ngSubmit)="saveCredentials()">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Credenciales requeridas por {{ platformName }}:</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div *ngFor="let field of necessaryKeys">
+                    <label class="block text-sm font-medium text-gray-700">
+                        {{ field.label || field.key }}
+                        <span *ngIf="field.required" class="text-red-500">*</span>
+                    </label>
+                    <input [formControlName]="field.key"
+                        [type]="field.key.toLowerCase().includes('pass') || field.key.toLowerCase().includes('token') ? 'text' : 'text'"
+                        class="mt-1 w-full border border-gray-300 rounded px-3 py-2 placeholder-gray-600"
+                        placeholder="Introduzca la clave" />
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4">
+                <!-- <button type="button" (click)="testConnection()" class="text-blue-600 hover:underline cursor-pointer">
+                Probar conexión
+            </button> -->
+                <button type="button" routerLink="/external-integrations"
+                    class="text-blue-600 hover:underline cursor-pointer">
+                    Volver al listado
+                </button>
+                <button type="submit" [disabled]="credentialsForm.invalid"
+                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer">
+                    Guardar credenciales
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

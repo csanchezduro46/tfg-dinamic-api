@@ -21,11 +21,22 @@ class ExecutionController extends Controller
 
     public function list()
     {
-        if (!Auth::user()->hasRole('admin')) {
-            return response()->json(Execution::with(['mapping'])->get());
+        $type = request('type'); // puede ser 'manual', 'scheduled' o null
+
+        $query = Execution::with('mapping');
+
+        if ($type) {
+            $query->where('execution_type', $type);
         }
-        return response()->json(Execution::with(['mapping'])->where('apiCallMapping.user', '=', Auth::user()->getId())->get());
+
+        if (!Auth::user()->hasRole('admin')) {
+            $userMappingIds = Auth::user()->apiCallMappings()->pluck('id');
+            $query->whereIn('api_call_mapping_id', $userMappingIds);
+        }
+
+        return response()->json($query->orderByDesc('created_at')->get());
     }
+
 
     public function listByMapping($id)
     {

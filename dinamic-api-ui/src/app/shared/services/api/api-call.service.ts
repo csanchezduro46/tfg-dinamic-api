@@ -34,8 +34,8 @@ export class ApiCallService {
         );
     }
 
-    create(versionId: number, data: any): Observable<any> {
-        return this.http.post(`${this.baseUrl}/api/api-calls/${versionId}`, data).pipe(
+    create(data: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/api/api-calls`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );
     }

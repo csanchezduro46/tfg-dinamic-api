@@ -16,7 +16,7 @@ export class PlatformConnectionCredentialsService {
         );
     }
 
-    store(id: number, data: any) {
+    create(id: number, data: any) {
         return this.http.post(`${this.baseUrl}/api/connections/${id}/credentials`, data).pipe(
             catchError(err => this.errorHandler.handle(err))
         );

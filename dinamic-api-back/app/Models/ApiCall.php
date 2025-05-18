@@ -14,6 +14,7 @@ class ApiCall extends Model
      */
     protected $fillable = [
         'platform_version_id',
+        'group_id',
         'name',
         'group',
         'endpoint',

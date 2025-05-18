@@ -59,6 +59,7 @@
             <router-outlet></router-outlet>
             <app-generic-error-popup></app-generic-error-popup>
             <app-generic-success-popup></app-generic-success-popup>
+            <app-generic-info-popup></app-generic-info-popup>
             <app-confirm-popup *ngIf="confirmLogout" [title]="'Cerrar sesión'"
                 [message]="'¿Seguro de que deseas cerrar sesión?'" [confirmLabel]="'Cerrar sesión'"
                 [cancelLabel]="'Cancelar'" (confirm)="confirmLogoutAction()" (cancel)="confirmLogout = false">
